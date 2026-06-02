@@ -1,0 +1,5 @@
+added nextjs 15
+react compiler
+also changed the faulty middleware.ts to proxy.tx
+also changed old usage of api routes to server actions
+replaced prisma with drizzle orm recreated the database schema plus integrated neon db but user may use supabase too

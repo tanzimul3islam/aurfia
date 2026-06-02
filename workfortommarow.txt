@@ -1,0 +1,14 @@
+add default values in the edit form fix the edit feature of the product admin
+
+complete the import csv
+and gallery import
+product import system
+complete the marketing page completely
+
+done
+-----------------------------------------------------------------
+
+add a complete image fetching cappability using cloudinary
+to fetch all of the pages
+
+then test then deliver after he sends the contract

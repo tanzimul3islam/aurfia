@@ -1,0 +1,4 @@
+/=complete
+/product/[slug]/page.tsx=complete
+/versand-rueckgabe=complete
+/shop=complete

@@ -1,0 +1,40 @@
+{
+  "name": "completing-nextjs-jewellery-new-project",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^6.35.1",
+    "@neondatabase/serverless": "^1.1.0",
+    "@types/papaparse": "^5.5.0",
+    "cheerio": "^1.1.2",
+    "cloudinary": "^2.8.0",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.7",
+    "lucide-react": "^0.553.0",
+    "next": "16.0.3",
+    "papaparse": "^5.5.3",
+    "puppeteer": "^24.30.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "stripe": "^19.3.1",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "babel-plugin-react-compiler": "1.0.0",
+    "better-sqlite3": "^12.10.0",
+    "drizzle-kit": "^0.31.7",
+    "tailwindcss": "^4",
+    "tsx": "^4.20.6",
+    "typescript": "^5"
+  }
+}

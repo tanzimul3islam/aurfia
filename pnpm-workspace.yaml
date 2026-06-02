@@ -1,0 +1,6 @@
+allowBuilds:
+  '@clerk/shared': set this to true or false
+  better-sqlite3: true
+  esbuild: set this to true or false
+  puppeteer: set this to true or false
+  sharp: set this to true or false
