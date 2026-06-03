@@ -1,0 +1,67 @@
+diff --git a/dist/bun-sqlite-dialect-DzNwOpKv.mjs b/dist/bun-sqlite-dialect-DzNwOpKv.mjs
+index adfbfd3b7700e4aa10d5d63aef4d25c806c9cbb9..56844d7166ef1ebaff2b60c90849823f6efbf365 100644
+--- a/dist/bun-sqlite-dialect-DzNwOpKv.mjs
++++ b/dist/bun-sqlite-dialect-DzNwOpKv.mjs
+@@ -1,4 +1,4 @@
+-import { CompiledQuery, DEFAULT_MIGRATION_LOCK_TABLE, DEFAULT_MIGRATION_TABLE, DefaultQueryCompiler, sql } from "kysely";
++import { CompiledQuery, DEFAULT_MIGRATION_LOCK_TABLE, DEFAULT_MIGRATION_TABLE, DefaultQueryCompiler, sql, SqliteAdapter, SqliteQueryCompiler, Kysely, MssqlDialect, MysqlDialect, PostgresDialect, SqliteDialect } from "./stub-kysely.mjs";
+ //#region src/bun-sqlite-dialect.ts
+ var BunSqliteAdapter = class {
+ 	get supportsCreateIfNotExists() {
+diff --git a/dist/d1-sqlite-dialect-C2B7YsIT.mjs b/dist/d1-sqlite-dialect-C2B7YsIT.mjs
+index 1545e428a73da3747b96b142d7a0f40eaaa41b0e..71178b5eb4fd46ed67b5e1cb3c9df213fe83b207 100644
+--- a/dist/d1-sqlite-dialect-C2B7YsIT.mjs
++++ b/dist/d1-sqlite-dialect-C2B7YsIT.mjs
+@@ -1,4 +1,4 @@
+-import { DEFAULT_MIGRATION_LOCK_TABLE, DEFAULT_MIGRATION_TABLE, SqliteAdapter, SqliteQueryCompiler } from "kysely";
++import { CompiledQuery, DEFAULT_MIGRATION_LOCK_TABLE, DEFAULT_MIGRATION_TABLE, DefaultQueryCompiler, sql, SqliteAdapter, SqliteQueryCompiler, Kysely, MssqlDialect, MysqlDialect, PostgresDialect, SqliteDialect } from "./stub-kysely.mjs";
+ //#region src/d1-sqlite-dialect.ts
+ var D1SqliteAdapter = class extends SqliteAdapter {};
+ var D1SqliteDriver = class {
+diff --git a/dist/index.mjs b/dist/index.mjs
+index ce148903e24c5cbdbcae45e00d879b6e21e3c8f5..0692b92a933b4b68460f9e25831163335718a8ad 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -1,4 +1,4 @@
+-import { Kysely, MssqlDialect, MysqlDialect, PostgresDialect, SqliteDialect, sql } from "kysely";
++import { CompiledQuery, DEFAULT_MIGRATION_LOCK_TABLE, DEFAULT_MIGRATION_TABLE, DefaultQueryCompiler, sql, SqliteAdapter, SqliteQueryCompiler, Kysely, MssqlDialect, MysqlDialect, PostgresDialect, SqliteDialect } from "./stub-kysely.mjs";
+ import { createAdapterFactory } from "@better-auth/core/db/adapter";
+ import { logger } from "@better-auth/core/env";
+ import { capitalizeFirstLetter } from "@better-auth/core/utils/string";
+@@ -500,7 +500,7 @@ const kyselyAdapter = (db, config) => {
+ 	let adapterOptions = null;
+ 	adapterOptions = {
+ 		config: {
+-			adapterId: "kysely",
++			adapterId: "./stub-kysely.mjs",
+ 			adapterName: "Kysely Adapter",
+ 			usePlural: config?.usePlural,
+ 			debugLogs: config?.debugLogs,
+diff --git a/dist/node-sqlite-dialect.mjs b/dist/node-sqlite-dialect.mjs
+index 878100c374a231456d1965b1298bb7d8fa14df7c..302d7d75fd2a40dae73f22aa961ec079744c10a5 100644
+--- a/dist/node-sqlite-dialect.mjs
++++ b/dist/node-sqlite-dialect.mjs
+@@ -1,4 +1,4 @@
+-import { CompiledQuery, DEFAULT_MIGRATION_LOCK_TABLE, DEFAULT_MIGRATION_TABLE, DefaultQueryCompiler, sql } from "kysely";
++import { CompiledQuery, DEFAULT_MIGRATION_LOCK_TABLE, DEFAULT_MIGRATION_TABLE, DefaultQueryCompiler, sql, SqliteAdapter, SqliteQueryCompiler, Kysely, MssqlDialect, MysqlDialect, PostgresDialect, SqliteDialect } from "./stub-kysely.mjs";
+ //#region src/node-sqlite-dialect.ts
+ var NodeSqliteAdapter = class {
+ 	get supportsCreateIfNotExists() {
+diff --git a/dist/stub-kysely.mjs b/dist/stub-kysely.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..56a160473ef9bb826557af4709c5fcf2e0a65f94
+--- /dev/null
++++ b/dist/stub-kysely.mjs
+@@ -0,0 +1,12 @@
++export class CompiledQuery {}
++export class DefaultQueryCompiler {}
++export class SqliteAdapter {}
++export class SqliteQueryCompiler {}
++export class Kysely {}
++export class MssqlDialect {}
++export class MysqlDialect {}
++export class PostgresDialect {}
++export class SqliteDialect {}
++export const DEFAULT_MIGRATION_TABLE = "__drizzle_migrations";
++export const DEFAULT_MIGRATION_LOCK_TABLE = "__drizzle_migrations_lock";
++export function sql() {}
