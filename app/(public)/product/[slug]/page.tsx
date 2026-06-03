@@ -32,11 +32,19 @@ export default function ProductPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [reviewStats, setReviewStats] = useState<{ averageRating: number; totalReviews: number } | null>(null);
   const [reviewRefreshKey, setReviewRefreshKey] = useState(0);
-  const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
+  const [quantities, setQuantities] = useState<Record<number, number>>({});
 
-  const isInCart = product
-    ? items.some((item) => item.slug === product.slug)
-    : false;
+  const totalInCart = product
+    ? items.filter((item) => item.productId.startsWith(String(product.id))).reduce((sum, i) => sum + i.quantity, 0)
+    : 0;
+
+  const setQty = (variantId: number, qty: number) => {
+    setQuantities((prev) => ({ ...prev, [variantId]: Math.max(0, qty) }));
+  };
+
+  const totalSelected = product
+    ? product.variants.reduce((sum, v) => sum + (quantities[v.id] || 0), 0)
+    : 0;
 
   useEffect(() => {
     if (!slug) return;
@@ -68,20 +76,36 @@ export default function ProductPage() {
     loadData();
   }, [slug]);
 
-  const currentVariant = product?.variants[selectedVariantIndex] ?? null;
-
-  const handleAddToCart = () => {
+  const handleAddAllToCart = () => {
     if (!product) return;
-    const priceCents = currentVariant?.sellingPriceCents ?? product.priceCents;
-    addItem({
-      productId: String(product.id),
-      name: product.name,
-      price: priceCents,
-      quantity: 1,
-      image: product.images[0]?.url,
-      slug: product.slug,
+    let count = 0;
+    product.variants.forEach((variant) => {
+      const qty = quantities[variant.id] || 0;
+      if (qty > 0) {
+        addItem({
+          productId: `${product.id}-${variant.id}`,
+          name: `${product.name} - ${variant.title ?? "Option"}`,
+          price: variant.sellingPriceCents,
+          quantity: qty,
+          image: variant.imageUrl || product.images[0]?.url,
+          slug: product.slug,
+        });
+        count += qty;
+      }
     });
-    setToast({ text: "Added to cart", open: true });
+    if (count === 0) {
+      addItem({
+        productId: String(product.id),
+        name: product.name,
+        price: product.priceCents,
+        quantity: 1,
+        image: product.images[0]?.url,
+        slug: product.slug,
+      });
+      count = 1;
+    }
+    setQuantities({});
+    setToast({ text: `Added ${count} item${count > 1 ? "s" : ""} to cart`, open: true });
   };
 
   const handleToggleFavorite = () => {
@@ -150,7 +174,7 @@ export default function ProductPage() {
           id: product.id,
           name: product.name,
           description: product.description,
-          price_cents: currentVariant?.sellingPriceCents ?? product.priceCents,
+          price_cents: product.variants[0]?.sellingPriceCents ?? product.priceCents,
           currency: product.currency,
           stock: product.stock,
           sku: product.sku,
@@ -175,7 +199,7 @@ export default function ProductPage() {
             <div className="border border-black/10 rounded-sm overflow-hidden">
               <div className="w-full bg-neutral-100" style={{ aspectRatio: "4/5" }}>
                 <img
-                  src={currentVariant?.imageUrl || product.images[currentImageIndex]?.url || product.images[0]?.url}
+                  src={product.images[currentImageIndex]?.url || product.images[0]?.url}
                   alt={product.name}
                   className="w-full h-full object-cover text-transparent"
                 />
@@ -211,49 +235,87 @@ export default function ProductPage() {
                 <span className="text-sm text-zinc-400">No reviews yet</span>
               )}
             </div>
-            <div className="text-2xl font-medium mb-4">${((currentVariant?.sellingPriceCents ?? product.priceCents) / 100).toFixed(2)}</div>
             <p className="text-neutral-600 leading-relaxed">{product.description}</p>
 
             {product.variants.length > 0 && (
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-zinc-900">Available Options</h3>
-                <div className="flex flex-wrap gap-1.5">
-                  {product.variants.map((variant, idx) => (
-                    <button
-                      key={variant.id}
-                      onClick={() => setSelectedVariantIndex(idx)}
-                      className={`border rounded-sm p-1 text-center hover:border-black/60 transition w-[100px] ${
-                        idx === selectedVariantIndex
-                          ? "border-black ring-1 ring-black/20"
-                          : "border-black/10"
-                      }`}
-                    >
-                      <div className="w-full aspect-[4/3] bg-neutral-100 overflow-hidden rounded-sm">
-                        {variant.imageUrl ? (
-                          <img src={variant.imageUrl} alt={variant.title ?? ""} className="w-full h-full object-cover text-transparent" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-neutral-400 text-[9px]">No image</div>
-                        )}
+              <div>
+                <h3 className="text-sm font-medium text-zinc-900 mb-3">Available Options</h3>
+                <div className="border border-[#E5E5E5] rounded-lg overflow-hidden">
+                  {/* Table header — hidden on mobile */}
+                  <div className="hidden md:grid grid-cols-[60px_1fr_1fr_120px] gap-0 bg-neutral-50 border-b border-[#E5E5E5] text-[11px] uppercase tracking-wider text-zinc-500 font-medium">
+                    <div className="p-3 text-center">Image</div>
+                    <div className="p-3">Size</div>
+                    <div className="p-3 text-center">Price</div>
+                    <div className="p-3 text-center">Qty</div>
+                  </div>
+
+                  {product.variants.map((variant) => {
+                    const qty = quantities[variant.id] || 0;
+                    return (
+                      <div
+                        key={variant.id}
+                        className="grid grid-cols-[48px_1fr_auto] md:grid-cols-[60px_1fr_1fr_120px] items-center gap-3 p-3 border-b border-[#E5E5E5] last:border-b-0 hover:bg-neutral-50/60 transition-colors"
+                      >
+                        {/* Thumbnail */}
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-md overflow-hidden bg-neutral-100 border border-[#E5E5E5] shrink-0">
+                          {variant.imageUrl ? (
+                            <img src={variant.imageUrl} alt={variant.title ?? ""} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-neutral-300 text-[9px]">—</div>
+                          )}
+                        </div>
+
+                        {/* Size / Variant name */}
+                        <div className="text-sm font-medium text-zinc-800">{variant.title ?? "Option"}</div>
+
+                        {/* Price */}
+                        <div className="text-sm text-zinc-700 text-right md:text-center md:col-span-1">
+                          ${(variant.sellingPriceCents / 100).toFixed(2)}
+                        </div>
+
+                        {/* Quantity control */}
+                        <div className="flex items-center justify-end md:justify-center col-span-full md:col-span-1 mt-2 md:mt-0">
+                          <div className="inline-flex items-center border border-[#E5E5E5] rounded-md overflow-hidden">
+                            <button
+                              onClick={() => setQty(variant.id, qty - 1)}
+                              className="w-8 h-8 flex items-center justify-center text-zinc-600 hover:bg-neutral-100 transition-colors border-r border-[#E5E5E5] text-sm leading-none"
+                            >
+                              −
+                            </button>
+                            <span className="w-10 h-8 flex items-center justify-center text-sm font-medium text-zinc-800 select-none">
+                              {qty}
+                            </span>
+                            <button
+                              onClick={() => setQty(variant.id, qty + 1)}
+                              className="w-8 h-8 flex items-center justify-center text-zinc-600 hover:bg-neutral-100 transition-colors border-l border-[#E5E5E5] text-sm leading-none"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-[11px] font-semibold text-zinc-800 leading-snug mt-1 break-words line-clamp-2">{variant.title ?? "Option"}</div>
-                    </button>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
 
-            <div className="flex gap-3">
+            <div className="flex gap-3 pt-2">
               <button
-                onClick={handleAddToCart}
-                disabled={isInCart}
-                className={`flex-1 h-12 rounded-none text-sm font-medium ${isInCart ? "bg-neutral-200 text-neutral-500 cursor-not-allowed" : "bg-black text-white hover:opacity-95"}`}
+                onClick={handleAddAllToCart}
+                disabled={totalInCart > 0}
+                className={`flex-1 h-12 rounded-lg text-sm font-medium transition-colors ${totalInCart > 0 ? "bg-neutral-200 text-neutral-500 cursor-not-allowed" : "bg-black text-white hover:opacity-90"}`}
               >
-                {isInCart ? "Already in Cart" : "Add to Cart"}
+                {totalInCart > 0
+                  ? `Already in Cart (${totalInCart})`
+                  : totalSelected > 0
+                    ? `Add to Cart (${totalSelected})`
+                    : "Add to Cart"}
               </button>
 
               <button
                 onClick={handleToggleFavorite}
-                className="w-12 h-12 border border-black/10 rounded-none hover:border-black/20 flex items-center justify-center"
+                className="w-12 h-12 border border-[#E5E5E5] rounded-lg hover:border-black/20 flex items-center justify-center transition-colors"
                 aria-label={isFavorite ? "Remove from wishlist" : "Add to wishlist"}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill={isFavorite ? "black" : "none"} stroke={isFavorite ? "black" : "currentColor"} strokeWidth="1.5">
