@@ -30,7 +30,7 @@ async function insertBulk(
 
 async function main() {
   // Step 1: Drop
-  const drop = `DROP TABLE IF EXISTS product_options, product_images, product_breadcrumbs, products, order_items, orders, blog_posts, seo_meta, analytics_settings, subscribers, users CASCADE;`;
+  const drop = `DROP TABLE IF EXISTS verification, account, session, product_options, product_images, product_breadcrumbs, products, order_items, orders, blog_posts, seo_meta, analytics_settings, subscribers, "user" CASCADE;`;
   const pg = await PG.connect();
   try { await pg.query(drop); } finally { pg.release(); }
   console.log('Dropped tables.');
@@ -59,10 +59,30 @@ async function main() {
       option_id INTEGER, price DOUBLE PRECISION, selling_price DOUBLE PRECISION,
       title TEXT, image_url TEXT, thumbnail_context TEXT
     );
-    CREATE TABLE IF NOT EXISTS users (
-      id SERIAL PRIMARY KEY, user_name TEXT NOT NULL, image_url TEXT,
-      role TEXT NOT NULL DEFAULT 'customer', email TEXT NOT NULL,
-      clerk_id TEXT NOT NULL UNIQUE, created_at TIMESTAMP DEFAULT NOW()
+    CREATE TABLE IF NOT EXISTS "user" (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL UNIQUE,
+      email_verified BOOLEAN NOT NULL DEFAULT false, image TEXT,
+      role TEXT DEFAULT 'customer',
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(), updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+    );
+    CREATE TABLE IF NOT EXISTS session (
+      id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES "user"(id),
+      token TEXT NOT NULL UNIQUE, expires_at TIMESTAMP NOT NULL,
+      ip_address TEXT, user_agent TEXT,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(), updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+    );
+    CREATE TABLE IF NOT EXISTS account (
+      id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES "user"(id),
+      account_id TEXT NOT NULL, provider_id TEXT NOT NULL,
+      access_token TEXT, refresh_token TEXT,
+      access_token_expires_at TIMESTAMP, refresh_token_expires_at TIMESTAMP,
+      scope TEXT, id_token TEXT, password TEXT,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(), updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+    );
+    CREATE TABLE IF NOT EXISTS verification (
+      id TEXT PRIMARY KEY, identifier TEXT NOT NULL, value TEXT NOT NULL,
+      expires_at TIMESTAMP NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(), updated_at TIMESTAMP NOT NULL DEFAULT NOW()
     );
     CREATE TABLE IF NOT EXISTS orders (
       id SERIAL PRIMARY KEY, stripe_id TEXT UNIQUE, email TEXT, total INTEGER,

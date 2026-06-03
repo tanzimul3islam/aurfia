@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+button, a { cursor: pointer; }
+
 @theme {
   --color-brand: #000000;
   --color-brand-accent: #8B7355;

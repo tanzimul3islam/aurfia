@@ -1,13 +1,12 @@
-'use server';
+"use server";
 
-import { getOrCreateDbUser } from "./getOrCreateDbUser";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
-export const isUserAdmin = async() => {
-    const dbUser = await getOrCreateDbUser();
+export const isUserAdmin = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-    if(dbUser?.role === 'admin') {
-        return true;
-    }
-
-    return false;
+  return session?.user?.role === "admin";
 };

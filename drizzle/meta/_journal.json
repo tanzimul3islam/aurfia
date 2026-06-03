@@ -5,36 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1763118046455,
-      "tag": "0000_perfect_lizard",
+      "when": 1780484484830,
+      "tag": "0000_calm_human_cannonball",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1763224462588,
-      "tag": "0001_sharp_pete_wisdom",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1763279067254,
-      "tag": "0002_abnormal_viper",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1763280506791,
-      "tag": "0003_tranquil_archangel",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1763309986801,
-      "tag": "0004_shocking_hammerhead",
+      "when": 1780486103608,
+      "tag": "0001_chemical_kinsey_walden",
       "breakpoints": true
     }
   ]

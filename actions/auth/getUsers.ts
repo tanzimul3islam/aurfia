@@ -1,27 +1,26 @@
-'use server';
+"use server";
 
-import { db } from '@/lib/db';
-import { users } from '@/db/schema';
-import { isSuperAdminSession } from './isSuperAdminSession';
-import { getOrCreateDbUser } from './getOrCreateDbUser';
-import { eq, not } from 'drizzle-orm';
+import { db } from "@/lib/db";
+import { user } from "@/db/schema";
+import { isSuperAdminSession } from "./isSuperAdminSession";
+import { isUserAdmin } from "./isUserAdmin";
+import { not } from "drizzle-orm";
 
 export const getAllUsers = async () => {
   try {
     const isSuperAdmin = await isSuperAdminSession();
-    const dbUser = await getOrCreateDbUser();
+    const isAdmin = await isUserAdmin();
 
-    if (isSuperAdmin.isLoggedIn || dbUser?.role === 'admin') {
+    if (isSuperAdmin.isLoggedIn || isAdmin) {
       const u = await db
         .select()
-        .from(users)
-        .where(not(eq(users.id, dbUser!.id)));
+        .from(user);
 
       return u;
     }
 
     return [];
   } catch {
-    throw new Error('Internal Server Error');
+    throw new Error("Internal Server Error");
   }
 };

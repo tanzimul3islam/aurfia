@@ -11,6 +11,10 @@ import {
   getProductBySlug,
   getSimilarProducts,
 } from "@/actions/publicApis/productDetailPageActions";
+import ReviewList from "@/components/reviews/ReviewList";
+import ReviewForm from "@/components/reviews/ReviewForm";
+import StarRating from "@/components/reviews/StarRating";
+import { getProductReviews } from "@/actions/reviews/getProductReviews";
 
 export default function ProductPage() {
   const params = useParams();
@@ -26,6 +30,8 @@ export default function ProductPage() {
   });
   const [isFavorite, setIsFavorite] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [reviewStats, setReviewStats] = useState<{ averageRating: number; totalReviews: number } | null>(null);
+  const [reviewRefreshKey, setReviewRefreshKey] = useState(0);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
 
   const isInCart = product
@@ -41,6 +47,13 @@ export default function ProductPage() {
         const fetchedProduct = await getProductBySlug(slug);
         if (!fetchedProduct) return notFound();
         setProduct(fetchedProduct);
+
+        const reviews = await getProductReviews(fetchedProduct.id);
+        setReviewStats(
+          reviews.totalReviews > 0
+            ? { averageRating: reviews.averageRating, totalReviews: reviews.totalReviews }
+            : null
+        );
 
         const fetchedSimilar = await getSimilarProducts(slug);
         setSimilarProducts(fetchedSimilar);
@@ -186,6 +199,18 @@ export default function ProductPage() {
 
           <div className="space-y-6">
             <h1 className="font-serif text-[32px] md:text-[40px] leading-[1.1] mb-2">{product.name}</h1>
+            <div className="flex items-center gap-3 mb-4">
+              {reviewStats ? (
+                <div className="flex items-center gap-2">
+                  <StarRating rating={reviewStats.averageRating} size={16} />
+                  <span className="text-sm text-zinc-500">
+                    {reviewStats.averageRating.toFixed(1)} ({reviewStats.totalReviews} review{reviewStats.totalReviews !== 1 ? "s" : ""})
+                  </span>
+                </div>
+              ) : (
+                <span className="text-sm text-zinc-400">No reviews yet</span>
+              )}
+            </div>
             <div className="text-2xl font-medium mb-4">${((currentVariant?.sellingPriceCents ?? product.priceCents) / 100).toFixed(2)}</div>
             <p className="text-neutral-600 leading-relaxed">{product.description}</p>
 
@@ -239,6 +264,13 @@ export default function ProductPage() {
             </div>
           </div>
         </div>
+
+        {/* Reviews */}
+        <section className="mt-16 lg:mt-20 max-w-lg">
+          <h2 className="font-serif text-[28px] md:text-[32px] mb-8">Reviews</h2>
+          <ReviewList productId={product.id} refreshKey={reviewRefreshKey} />
+          <ReviewForm productId={product.id} onReviewSubmitted={() => setReviewRefreshKey(k => k + 1)} />
+        </section>
 
         {similarProducts.length > 0 && (
           <section className="mt-16 lg:mt-20">

@@ -2,14 +2,14 @@
 
 import { useTransition } from "react";
 import type { InferSelectModel } from "drizzle-orm";
-import { users } from "@/db/schema";
+import { user } from "@/db/schema";
 import { setUserRole } from "@/actions/auth/setUserRole";
 
-type User = InferSelectModel<typeof users>;
+type User = InferSelectModel<typeof user>;
 export default function UsersTable({ users }: {users: User[]}) {
   const [isPending, startTransition] = useTransition();
 
-  const promote = (id: number) => {
+  const promote = (id: string) => {
     startTransition(() => {
       setUserRole(id, "admin");
     });
@@ -32,7 +32,7 @@ export default function UsersTable({ users }: {users: User[]}) {
           {users.map((u) => (
             <tr key={u.id} className="border-t border-gray-800">
               <td className="px-5 py-3">{u.id}</td>
-              <td className="px-5 py-3">{u.userName ?? "—"}</td>
+              <td className="px-5 py-3">{u.name ?? "—"}</td>
               <td className="px-5 py-3">{u.email}</td>
               <td className="px-5 py-3">{u.role ?? "user"}</td>
 

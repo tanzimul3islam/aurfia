@@ -91,9 +91,9 @@ export default function Footer() {
               <circle cx="18" cy="16" r="9" fill="#EB001B"/>
               <circle cx="30" cy="16" r="9" fill="#F79E1B" opacity="0.8"/>
             </svg>
-            <svg viewBox="0 0 48 32" className="h-5 w-auto" aria-label="PayPal">
-              <rect width="48" height="32" rx="4" fill="transparent" stroke="#ccc" strokeWidth="0.5"/>
-              <text x="24" y="21" textAnchor="middle" fill="#003087" fontSize="10" fontWeight="bold" fontFamily="sans-serif">PayPal</text>
+            <svg viewBox="0 0 48 32" className="h-5 w-auto" aria-label="Stripe">
+              <rect width="48" height="32" rx="4" fill="#6772E5"/>
+              <text x="24" y="21" textAnchor="middle" fill="white" fontSize="9" fontWeight="bold" fontFamily="sans-serif">STRIPE</text>
             </svg>
           </div>
 
@@ -102,8 +102,11 @@ export default function Footer() {
             <a
               href="#top"
               className="opacity-70 hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2"
+              aria-label="Back to top"
             >
-              Back to top
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="18 15 12 9 6 15"/>
+              </svg>
             </a>
           </div>
         </div>

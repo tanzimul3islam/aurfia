@@ -3,6 +3,7 @@
 import { useState, useEffect, useTransition } from 'react';
 import { Heart } from 'lucide-react';
 import { getFavorites } from '@/actions/publicApis/faveroutes';
+import { useCartStore } from '@/lib/cart-store';
 
 type FavoriteItem = {
   id: number;
@@ -13,6 +14,7 @@ type FavoriteItem = {
 };
 
 export default function WishlistPage() {
+  const addItem = useCartStore((s) => s.addItem);
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [addedToCart, setAddedToCart] = useState<string | null>(null);
@@ -50,25 +52,14 @@ export default function WishlistPage() {
   }
 
   function addToCart(item: FavoriteItem) {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const existing = cart.find((c: any) => c.id === item.id);
-
-    if (existing) {
-      existing.qty += 1;
-    } else {
-      cart.push({
-        id: item.id,
-        name: item.name,
-        price: '$' + (item.priceCents / 100).toFixed(2),
-        img: item.images?.[0]?.url || '',
-        href: `/product/${item.slug}`,
-        variant: 'Standard',
-        qty: 1,
-      });
-    }
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    window.dispatchEvent(new CustomEvent('cartUpdate'));
+    addItem({
+      productId: String(item.id),
+      name: item.name,
+      price: item.priceCents,
+      quantity: 1,
+      image: item.images?.[0]?.url,
+      slug: item.slug,
+    });
     setAddedToCart(String(item.id));
     setTimeout(() => setAddedToCart(null), 2000);
   }

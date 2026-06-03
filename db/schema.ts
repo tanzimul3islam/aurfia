@@ -1,6 +1,55 @@
 import { pgTable, serial, text, integer, doublePrecision, timestamp, boolean } from 'drizzle-orm/pg-core';
 
-// ─── product.db tables ─────────────────────────────────────────────
+// ─── Better Auth tables ────────────────────────────────────────────
+
+export const user = pgTable("user", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  emailVerified: boolean("email_verified").notNull().default(false),
+  image: text("image"),
+  role: text("role").default("customer"),
+  createdAt: timestamp("created_at", { mode: "string" }).notNull(),
+  updatedAt: timestamp("updated_at", { mode: "string" }).notNull(),
+});
+
+export const session = pgTable("session", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id),
+  token: text("token").notNull().unique(),
+  expiresAt: timestamp("expires_at", { mode: "string" }).notNull(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at", { mode: "string" }).notNull(),
+  updatedAt: timestamp("updated_at", { mode: "string" }).notNull(),
+});
+
+export const account = pgTable("account", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id),
+  accountId: text("account_id").notNull(),
+  providerId: text("provider_id").notNull(),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  accessTokenExpiresAt: timestamp("access_token_expires_at", { mode: "string" }),
+  refreshTokenExpiresAt: timestamp("refresh_token_expires_at", { mode: "string" }),
+  scope: text("scope"),
+  idToken: text("id_token"),
+  password: text("password"),
+  createdAt: timestamp("created_at", { mode: "string" }).notNull(),
+  updatedAt: timestamp("updated_at", { mode: "string" }).notNull(),
+});
+
+export const verification = pgTable("verification", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expires_at", { mode: "string" }).notNull(),
+  createdAt: timestamp("created_at", { mode: "string" }).notNull(),
+  updatedAt: timestamp("updated_at", { mode: "string" }).notNull(),
+});
+
+// ─── product.db tables (read-only) ─────────────────────────────────
 
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
@@ -49,16 +98,6 @@ export const productOptions = pgTable("product_options", {
 });
 
 // ─── App tables ────────────────────────────────────────────────────
-
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  userName: text("user_name").notNull(),
-  imageUrl: text("image_url"),
-  role: text("role").notNull().default("customer"),
-  email: text("email").notNull(),
-  clerkId: text("clerk_id").notNull().unique(),
-  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
-});
 
 export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
@@ -114,4 +153,16 @@ export const subscribers = pgTable("subscribers", {
   email: text("email").notNull().unique(),
   status: text("status").notNull().default("active"),
   subscribedAt: timestamp("subscribed_at", { mode: 'string' }).defaultNow(),
+});
+
+export const reviews = pgTable("reviews", {
+  id: serial("id").primaryKey(),
+  productId: integer("product_id").notNull().references(() => products.id),
+  userId: text("user_id").notNull().references(() => user.id),
+  userName: text("user_name").notNull(),
+  rating: integer("rating").notNull(),
+  title: text("title"),
+  content: text("content").notNull(),
+  isVerifiedPurchase: boolean("is_verified_purchase").default(false),
+  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
 });

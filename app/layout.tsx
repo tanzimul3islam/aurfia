@@ -1,16 +1,6 @@
 import { type Metadata } from "next";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { getAnalyticsSettings } from "@/actions/seo/analytics";
 import './globals.css';
 import { ReactNode } from 'react';
@@ -124,31 +114,29 @@ export default async function RootLayout({
 }>) {
   const settings = await getAnalyticsSettings();
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className="w-full">
-          {children}
+    <html lang="en">
+      <body className="w-full">
+        {children}
 
-          {settings.enabled && settings.gaCode && (
-            <>
-              <script
-                async
-                src={`https://www.googletagmanager.com/gtag/js?id=${settings.gaCode}`}
-              />
-              <script
-                dangerouslySetInnerHTML={{
-                  __html: `
+        {settings.enabled && settings.gaCode && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${settings.gaCode}`}
+            />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
                   window.dataLayer = window.dataLayer || [];
                   function gtag(){dataLayer.push(arguments);}
                   gtag('js', new Date());
                   gtag('config', '${settings.gaCode}');
                 `,
-                }}
-              />
-            </>
-          )}
-        </body>
-      </html>
-    </ClerkProvider>
+              }}
+            />
+          </>
+        )}
+      </body>
+    </html>
   );
 }

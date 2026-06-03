@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ArrowUpDown } from 'lucide-react';
 import ProductCard from '@/components/product-card';
@@ -19,13 +19,16 @@ export default function ShopPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const searchParams = useSearchParams();
 
+  const category = searchParams.get('category');
+  const subcategory = searchParams.get('subcategory');
+
   useEffect(() => {
     loadProducts();
   }, []);
 
   useEffect(() => {
-    applySorting();
-  }, [allProducts, sortBy, searchParams]);
+    applyFiltering();
+  }, [allProducts, sortBy, category, subcategory]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -43,10 +46,7 @@ export default function ShopPage() {
     }
   }
 
-  function applySorting() {
-    const category = searchParams.get('category');
-    const subcategory = searchParams.get('subcategory');
-
+  function applyFiltering() {
     let filtered = [...allProducts];
 
     if (category) {
@@ -92,9 +92,6 @@ export default function ShopPage() {
       </div>
     );
   }
-
-  const category = searchParams.get('category');
-  const subcategory = searchParams.get('subcategory');
 
   const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE);
   const paginatedProducts = filteredProducts.slice(

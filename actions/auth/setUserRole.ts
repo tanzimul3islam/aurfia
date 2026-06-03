@@ -1,22 +1,22 @@
-'use server';
+"use server";
 
-import { db } from '@/lib/db';
-import { users } from '@/db/schema';
-import { eq } from 'drizzle-orm';
-import { isSuperAdminSession } from './isSuperAdminSession';
-import { revalidatePath } from 'next/cache';
+import { db } from "@/lib/db";
+import { user } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { isSuperAdminSession } from "./isSuperAdminSession";
+import { revalidatePath } from "next/cache";
 
-export const setUserRole = async (userId: number, role: 'admin') => {
+export const setUserRole = async (userId: string, role: "admin") => {
   const isSuperAdmin = await isSuperAdminSession();
 
   if (!isSuperAdmin.isLoggedIn) {
-    throw new Error('Unauthorized');
+    throw new Error("Unauthorized");
   }
 
   await db
-    .update(users)
+    .update(user)
     .set({ role })
-    .where(eq(users.id, userId));
+    .where(eq(user.id, userId));
 
-  revalidatePath('/admin/users');
+  revalidatePath("/admin/users");
 };

@@ -14,12 +14,13 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const isUserSuperAdmin = await isSuperAdminSession();
-  const isAdmin = await isUserAdmin();
+  const superAdmin = await isSuperAdminSession();
+  const admin = await isUserAdmin();
 
-  if (!isUserSuperAdmin && !isAdmin) {
+  if (!superAdmin.isLoggedIn && !admin) {
     redirect("/");
   }
+
   return (
     <>
       <nav className="bg-white/95 backdrop-blur-md border-b border-black/10 shadow-sm fixed top-0 left-0 right-0 z-50 h-16 flex items-center px-4 md:px-8">
@@ -28,8 +29,8 @@ export default async function AdminLayout({
             <Link href="/admin" className="text-zinc-600 hover:text-zinc-900 transition-colors font-medium">Dashboard</Link>
             <Link href="/admin/products" className="text-zinc-600 hover:text-zinc-900 transition-colors">Products</Link>
             <Link href="/admin/orders" className="text-zinc-600 hover:text-zinc-900 transition-colors">Orders</Link>
+            <Link href="/admin/reviews" className="text-zinc-600 hover:text-zinc-900 transition-colors">Reviews</Link>
             <Link href="/admin/marketing" className="text-zinc-600 hover:text-zinc-900 transition-colors">Marketing</Link>
-
           </div>
           <Link href="/" className="text-zinc-500 hover:text-zinc-800 transition-colors text-sm">Back to Site →</Link>
         </div>

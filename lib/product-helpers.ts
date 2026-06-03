@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
-import { products, productImages, productBreadcrumbs, productOptions } from '@/db/schema';
-import { eq, inArray, desc, like, asc } from 'drizzle-orm';
+import { products, productImages, productBreadcrumbs, productOptions, reviews } from '@/db/schema';
+import { eq, inArray, desc, asc, sql } from 'drizzle-orm';
 
 // ─── Types that match what the existing UI expects ─────────────────
 
@@ -10,6 +10,8 @@ export type ProductCardItem = {
   slug: string;
   price: number;
   images: string[];
+  rating?: number | null;
+  reviewCount?: number | null;
 };
 
 export type ProductWithImages = {
@@ -24,6 +26,8 @@ export type ProductWithImages = {
   featured: boolean;
   category: string | null;
   subcategory: string | null;
+  rating: number | null;
+  reviewCount: number | null;
   createdAt: Date;
   images: { id: number; url: string; alt: string | null; sort: number; productId: number }[];
 };
@@ -41,6 +45,8 @@ export type ProductDetail = {
   sku: string | null;
   category: string | null;
   subcategory: string | null;
+  rating: number | null;
+  reviewCount: number | null;
   images: { id: number; url: string; sort: number; productId: number }[];
   variants: {
     id: number;
@@ -124,26 +130,27 @@ export async function getProductById(id: number): Promise<ProductDetail | null> 
   const [match] = await db.select().from(products).where(eq(products.id, id));
   if (!match) return null;
 
-  const allBreadcrumbs = await db
-    .select()
-    .from(productBreadcrumbs)
-    .where(eq(productBreadcrumbs.productId, match.id));
-
-  const allImages = await db
-    .select()
-    .from(productImages)
-    .where(eq(productImages.productId, match.id))
-    .orderBy(asc(productImages.sortOrder));
-
-  const allOptions = await db
-    .select()
-    .from(productOptions)
-    .where(eq(productOptions.productId, match.id));
+  const [allBreadcrumbs, allImages, allOptions, reviewStats] = await Promise.all([
+    db
+      .select()
+      .from(productBreadcrumbs)
+      .where(eq(productBreadcrumbs.productId, match.id)),
+    db
+      .select()
+      .from(productImages)
+      .where(eq(productImages.productId, match.id))
+      .orderBy(asc(productImages.sortOrder)),
+    db
+      .select()
+      .from(productOptions)
+      .where(eq(productOptions.productId, match.id)),
+    getReviewStats([match.id]),
+  ]);
 
   const category = allBreadcrumbs.find((b) => b.sortOrder === 1)?.breadcrumb ?? null;
   const subcategory = allBreadcrumbs.find((b) => b.sortOrder === 2)?.breadcrumb ?? null;
 
-  return buildProductDetail(match, slugify(match.productTitle ?? ''), category, subcategory, allImages, allOptions);
+  return buildProductDetail(match, slugify(match.productTitle ?? ''), category, subcategory, allImages, allOptions, reviewStats.get(match.id));
 }
 
 export async function getProductBySlug(slug: string): Promise<ProductDetail | null> {
@@ -151,26 +158,27 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   const match = allProducts.find((p) => slugify(p.productTitle ?? '') === slug);
   if (!match) return null;
 
-  const allBreadcrumbs = await db
-    .select()
-    .from(productBreadcrumbs)
-    .where(eq(productBreadcrumbs.productId, match.id));
-
-  const allImages = await db
-    .select()
-    .from(productImages)
-    .where(eq(productImages.productId, match.id))
-    .orderBy(asc(productImages.sortOrder));
-
-  const allOptions = await db
-    .select()
-    .from(productOptions)
-    .where(eq(productOptions.productId, match.id));
+  const [allBreadcrumbs, allImages, allOptions, reviewStats] = await Promise.all([
+    db
+      .select()
+      .from(productBreadcrumbs)
+      .where(eq(productBreadcrumbs.productId, match.id)),
+    db
+      .select()
+      .from(productImages)
+      .where(eq(productImages.productId, match.id))
+      .orderBy(asc(productImages.sortOrder)),
+    db
+      .select()
+      .from(productOptions)
+      .where(eq(productOptions.productId, match.id)),
+    getReviewStats([match.id]),
+  ]);
 
   const category = allBreadcrumbs.find((b) => b.sortOrder === 1)?.breadcrumb ?? null;
   const subcategory = allBreadcrumbs.find((b) => b.sortOrder === 2)?.breadcrumb ?? null;
 
-  return buildProductDetail(match, slug, category, subcategory, allImages, allOptions);
+  return buildProductDetail(match, slug, category, subcategory, allImages, allOptions, reviewStats.get(match.id));
 }
 
 function buildProductDetail(
@@ -180,6 +188,7 @@ function buildProductDetail(
   subcategory: string | null,
   allImages: typeof productImages.$inferSelect[],
   allOptions: typeof productOptions.$inferSelect[],
+  reviewStats?: { avg: number; count: number } | undefined,
 ): ProductDetail {
   return {
     id: match.id,
@@ -192,6 +201,8 @@ function buildProductDetail(
     stock: match.minimumOrderQuantity ?? 0,
     featured: false,
     sku: match.sku ?? null,
+    rating: reviewStats ? reviewStats.avg : null,
+    reviewCount: reviewStats ? reviewStats.count : 0,
     category,
     subcategory,
     images: allImages.map((img) => ({
@@ -273,23 +284,31 @@ export async function getLatestProducts(limit = 8): Promise<ProductCardItem[]> {
     .limit(limit);
 
   const ids = dbProducts.map((p) => p.id);
-  const allImages = ids.length
-    ? await db
-        .select()
-        .from(productImages)
-        .where(inArray(productImages.productId, ids))
-    : [];
+  const [allImages, reviewStats] = await Promise.all([
+    ids.length
+      ? db
+          .select()
+          .from(productImages)
+          .where(inArray(productImages.productId, ids))
+      : Promise.resolve([]),
+    getReviewStats(ids),
+  ]);
 
-  return dbProducts.map((p) => ({
-    id: p.id,
-    name: p.productTitle ?? '',
-    slug: slugify(p.productTitle ?? ''),
-    price: toCents(p.sellingPrice),
-    images: allImages
-      .filter((img) => img.productId === p.id)
-      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-      .map((img) => img.imageUrl ?? ''),
-  }));
+  return dbProducts.map((p) => {
+    const stats = reviewStats.get(p.id);
+    return {
+      id: p.id,
+      name: p.productTitle ?? '',
+      slug: slugify(p.productTitle ?? ''),
+      price: toCents(p.sellingPrice),
+      images: allImages
+        .filter((img) => img.productId === p.id)
+        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+        .map((img) => img.imageUrl ?? ''),
+      rating: stats ? stats.avg : null,
+      reviewCount: stats ? stats.count : 0,
+    };
+  });
 }
 
 export async function getProductCardBySlug(slug: string): Promise<ProductCardItem | null> {
@@ -314,6 +333,20 @@ export async function getProductCardBySlug(slug: string): Promise<ProductCardIte
 
 // ─── Internal ──────────────────────────────────────────────────────
 
+async function getReviewStats(productIds: number[]): Promise<Map<number, { avg: number; count: number }>> {
+  if (!productIds.length) return new Map();
+  const rows = await db
+    .select({
+      productId: reviews.productId,
+      avg: sql<number>`COALESCE(AVG(${reviews.rating}), 0)`,
+      count: sql<number>`COUNT(*)`,
+    })
+    .from(reviews)
+    .where(inArray(reviews.productId, productIds))
+    .groupBy(reviews.productId);
+  return new Map(rows.map((r) => [r.productId, { avg: Math.round(r.avg * 10) / 10, count: r.count }]));
+}
+
 async function attachImagesAndBreadcrumbs(
   dbProducts: (typeof products.$inferSelect)[],
 ): Promise<ProductWithImages[]> {
@@ -321,7 +354,7 @@ async function attachImagesAndBreadcrumbs(
 
   const ids = dbProducts.map((p) => p.id);
 
-  const [allImages, allBreadcrumbs] = await Promise.all([
+  const [allImages, allBreadcrumbs, reviewStats] = await Promise.all([
     ids.length
       ? db
           .select()
@@ -334,32 +367,38 @@ async function attachImagesAndBreadcrumbs(
           .from(productBreadcrumbs)
           .where(inArray(productBreadcrumbs.productId, ids))
       : Promise.resolve([]),
+    getReviewStats(ids),
   ]);
 
-  return dbProducts.map((p) => ({
-    id: p.id,
-    name: p.productTitle ?? '',
-    slug: slugify(p.productTitle ?? ''),
-    description: p.description ?? '',
-    priceCents: toCents(p.sellingPrice),
-    currency: 'USD',
-    compareAtCents: p.priceAmount ? toCents(p.priceAmount) : null,
-    stock: p.minimumOrderQuantity ?? 0,
-    featured: false,
-    category: allBreadcrumbs.find((b) => b.productId === p.id && b.sortOrder === 1)?.breadcrumb ?? null,
-    subcategory: allBreadcrumbs.find((b) => b.productId === p.id && b.sortOrder === 2)?.breadcrumb ?? null,
-    createdAt: new Date(),
-    images: allImages
-      .filter((img) => img.productId === p.id)
-      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-      .map((img, idx) => ({
-        id: img.id,
-        url: img.imageUrl ?? '',
-        alt: null,
-        sort: img.sortOrder ?? idx,
-        productId: img.productId,
-      })),
-  }));
+  return dbProducts.map((p) => {
+    const stats = reviewStats.get(p.id);
+    return {
+      id: p.id,
+      name: p.productTitle ?? '',
+      slug: slugify(p.productTitle ?? ''),
+      description: p.description ?? '',
+      priceCents: toCents(p.sellingPrice),
+      currency: 'USD',
+      compareAtCents: p.priceAmount ? toCents(p.priceAmount) : null,
+      stock: p.minimumOrderQuantity ?? 0,
+      featured: false,
+      rating: stats ? stats.avg : null,
+      reviewCount: stats ? stats.count : 0,
+      category: allBreadcrumbs.find((b) => b.productId === p.id && b.sortOrder === 1)?.breadcrumb ?? null,
+      subcategory: allBreadcrumbs.find((b) => b.productId === p.id && b.sortOrder === 2)?.breadcrumb ?? null,
+      createdAt: new Date(),
+      images: allImages
+        .filter((img) => img.productId === p.id)
+        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+        .map((img, idx) => ({
+          id: img.id,
+          url: img.imageUrl ?? '',
+          alt: null,
+          sort: img.sortOrder ?? idx,
+          productId: img.productId,
+        })),
+    };
+  });
 }
 
 export async function getSliderImages(): Promise<string[]> {

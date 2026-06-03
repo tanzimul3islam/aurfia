@@ -161,10 +161,15 @@ export default function ProductCard({ product }: { product: P }) {
         )}
 
         <div className="pt-3 pb-4 px-1">
-          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-start justify-between gap-2">
             <div className="min-w-0 flex-1">
               <h3 className="text-sm font-medium text-neutral-900 truncate leading-snug">{product.name}</h3>
               <p className="mt-1 text-sm text-neutral-500">${(product.priceCents / 100).toFixed(2)}</p>
+              {product.rating && product.rating > 0 ? (
+                <p className="text-xs text-neutral-400 mt-0.5">
+                  ★ {product.rating.toFixed(1)} ({product.reviewCount ?? 0})
+                </p>
+              ) : null}
             </div>
 
             <div className="flex items-center gap-1 shrink-0 pt-0.5">

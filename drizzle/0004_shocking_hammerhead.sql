@@ -1,1 +1,0 @@
-ALTER TABLE "orders" DROP CONSTRAINT "orders_email_unique";

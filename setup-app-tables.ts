@@ -3,14 +3,51 @@ import Database from 'better-sqlite3';
 const db = new Database('products.db');
 
 db.exec(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_name TEXT NOT NULL,
-    image_url TEXT,
-    role TEXT NOT NULL DEFAULT 'customer',
-    email TEXT NOT NULL,
-    clerk_id TEXT NOT NULL UNIQUE,
-    created_at TEXT DEFAULT (datetime('now'))
+  CREATE TABLE IF NOT EXISTS user (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    email_verified INTEGER NOT NULL DEFAULT 0,
+    image TEXT,
+    role TEXT DEFAULT 'customer',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS session (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL REFERENCES user(id),
+    token TEXT NOT NULL UNIQUE,
+    expires_at TEXT NOT NULL,
+    ip_address TEXT,
+    user_agent TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS account (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL REFERENCES user(id),
+    account_id TEXT NOT NULL,
+    provider_id TEXT NOT NULL,
+    access_token TEXT,
+    refresh_token TEXT,
+    access_token_expires_at TEXT,
+    refresh_token_expires_at TEXT,
+    scope TEXT,
+    id_token TEXT,
+    password TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS verification (
+    id TEXT PRIMARY KEY,
+    identifier TEXT NOT NULL,
+    value TEXT NOT NULL,
+    expires_at TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
   CREATE TABLE IF NOT EXISTS orders (

@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link';
-import { Search, ShoppingBag, Heart, Menu, X, LayoutGrid } from 'lucide-react';
+import { Search, ShoppingBag, Heart, Menu, X, LayoutGrid, User } from 'lucide-react';
+import { useSession, signOut } from '@/lib/auth-client';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { usePathname } from 'next/navigation';
@@ -18,13 +19,16 @@ export default function Header() {
   const [isShopMenuOpen, setIsShopMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileShopOpen, setIsMobileShopOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const defaultCategoryId = shopMenuCategories[0]?.id ?? '';
   const [activeCategoryId, setActiveCategoryId] = useState(defaultCategoryId);
   const [mobileActiveCategoryId, setMobileActiveCategoryId] = useState<string | null>(null);
+  const { data: session } = useSession();
   const { getTotalItems, isOpen, setIsOpen } = useCartStore();
   const cartItemCount = mounted ? getTotalItems() : 0;
 
   const shopMenuRef = useRef<HTMLDivElement | null>(null);
+  const profileRef = useRef<HTMLDivElement | null>(null);
   const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const firstShopLinkRef = useRef<HTMLAnchorElement | null>(null);
@@ -180,6 +184,17 @@ export default function Header() {
   }, [isShopMenuOpen]);
 
   useEffect(() => {
+    if (!profileOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!profileRef.current?.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    };
+    window.addEventListener("pointerdown", onPointerDown);
+    return () => window.removeEventListener("pointerdown", onPointerDown);
+  }, [profileOpen]);
+
+  useEffect(() => {
     return () => cancelHoverTimers();
   }, []);
 
@@ -207,7 +222,7 @@ export default function Header() {
                 aria-haspopup="menu"
                 aria-expanded={isShopMenuOpen}
                 aria-controls="shop-menu"
-                className="text-zinc-600 hover:text-zinc-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
+                className="text-zinc-600 hover:text-zinc-900 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
                 onClick={() => (isShopMenuOpen ? closeShopMenu() : openShopMenu())}
                 onKeyDown={(event) => {
                   if (event.key === 'ArrowDown') {
@@ -336,7 +351,7 @@ export default function Header() {
                     setSearchOpen(false);
                     setSearchQuery('');
                   }}
-                  className="opacity-70 hover:opacity-100 text-zinc-600"
+                  className="opacity-70 hover:opacity-100 text-zinc-600 cursor-pointer"
                 >
                   ✕
                 </button>
@@ -344,16 +359,68 @@ export default function Header() {
             ) : (
               <button
                 onClick={() => setSearchOpen(true)}
-                className="text-zinc-600 hover:text-zinc-900 transition-colors"
+                className="text-zinc-600 hover:text-zinc-900 transition-colors cursor-pointer"
               >
                 <Search size={18} />
               </button>
             )}
           </div>
 
+          {session ? (
+            <div ref={profileRef} className="relative">
+              <button
+                onClick={() => setProfileOpen((v) => !v)}
+                className="text-zinc-600 hover:text-zinc-900 transition-colors cursor-pointer"
+                aria-label="Profile"
+              >
+                <User size={18} />
+              </button>
+
+              {profileOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white border border-zinc-100 shadow-lg">
+                  <div className="px-4 py-3 border-b border-zinc-100">
+                    <p className="text-sm font-medium text-zinc-900 truncate">{session.user.name}</p>
+                    <p className="text-xs text-zinc-500 truncate">{session.user.email}</p>
+                  </div>
+                  <div className="py-1">
+                    <Link
+                      href="/wishlist"
+                      onClick={() => setProfileOpen(false)}
+                      className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50"
+                    >
+                      Wishlist
+                    </Link>
+                    {(session.user as any).role === "admin" && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setProfileOpen(false)}
+                        className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50"
+                      >
+                        Admin
+                      </Link>
+                    )}
+                    <button
+                      onClick={() => { signOut(); setProfileOpen(false); }}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link
+              href="/sign-in"
+              className="text-zinc-600 hover:text-zinc-900 transition-colors cursor-pointer"
+            >
+              <User size={18} />
+            </Link>
+          )}
+
           <a 
             href="/wishlist" 
-            className="text-zinc-600 hover:text-zinc-900 relative flex items-center gap-1 transition-colors"
+            className="text-zinc-600 hover:text-zinc-900 relative flex items-center gap-1 transition-colors cursor-pointer"
           >
             <Heart size={18} />
             {favoritesCount > 0 && (
@@ -365,7 +432,7 @@ export default function Header() {
 
           <button
             onClick={() => setIsOpen(true)}
-            className="text-zinc-600 hover:text-zinc-900 relative flex items-center gap-1 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
+            className="text-zinc-600 hover:text-zinc-900 relative flex items-center gap-1 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
           >
             <ShoppingBag size={18} />
             {cartItemCount > 0 && (
@@ -378,7 +445,7 @@ export default function Header() {
           {/* Mobile Menu Button */}
           {mounted && !isDesktop && (
             <button
-              className="opacity-70 hover:opacity-100 transition-opacity duration-150"
+              className="opacity-70 hover:opacity-100 transition-opacity duration-150 cursor-pointer"
               aria-label="Open menu"
               onClick={() => {
                 setIsMobileMenuOpen(true);
@@ -396,7 +463,7 @@ export default function Header() {
           <button
             type="button"
             aria-label="Close menu"
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-black/50 cursor-pointer"
             onClick={closeMobileMenu}
           />
 
@@ -406,7 +473,7 @@ export default function Header() {
                 AURFIA
               </span>
               <button
-                className="text-zinc-700 hover:text-zinc-900 transition-colors"
+                className="text-zinc-700 hover:text-zinc-900 transition-colors cursor-pointer"
                 onClick={closeMobileMenu}
               >
                 <X size={20} />
@@ -416,7 +483,7 @@ export default function Header() {
             <div className="flex-1 overflow-y-auto px-5 py-6">
               <button
                 type="button"
-                className="w-full flex items-center justify-between font-serif text-[16px] tracking-wide text-zinc-900/90 py-3 border-b border-black/10"
+                className="w-full flex items-center justify-between font-serif text-[16px] tracking-wide text-zinc-900/90 py-3 border-b border-black/10 cursor-pointer"
                 aria-expanded={isMobileShopOpen}
                 onClick={() => setIsMobileShopOpen((v) => !v)}
               >
@@ -434,7 +501,7 @@ export default function Header() {
                           <button
                             key={category.id}
                             type="button"
-                            className="w-full flex items-center justify-between min-h-[44px] font-serif text-[15px] text-zinc-900/90 border-b border-black/10 py-2 transition-colors duration-150 hover:text-zinc-900"
+                            className="w-full flex items-center justify-between min-h-[44px] font-serif text-[15px] text-zinc-900/90 border-b border-black/10 py-2 transition-colors duration-150 hover:text-zinc-900 cursor-pointer"
                             onClick={() =>
                               setMobileActiveCategoryId((prev) =>
                                 prev === category.id ? null : category.id,
@@ -491,6 +558,47 @@ export default function Header() {
                 </div>
               )}
             </div>
+          </div>
+
+          <div className="border-t border-black/10 px-5 py-4 mt-2 space-y-2">
+            {session ? (
+              <>
+                <div className="pb-2 border-b border-black/10">
+                  <p className="text-sm font-medium text-zinc-900 truncate">{session.user.name}</p>
+                  <p className="text-xs text-zinc-500 truncate">{session.user.email}</p>
+                </div>
+                <Link
+                  href="/wishlist"
+                  className="block text-sm text-zinc-600 hover:text-zinc-900"
+                  onClick={closeMobileMenu}
+                >
+                  Wishlist
+                </Link>
+                {(session.user as any).role === "admin" && (
+                  <Link
+                    href="/admin"
+                    className="block text-sm text-zinc-600 hover:text-zinc-900"
+                    onClick={closeMobileMenu}
+                  >
+                    Admin
+                  </Link>
+                )}
+                <button
+                  onClick={() => { signOut(); closeMobileMenu(); }}
+                  className="block text-sm text-red-600 hover:text-red-700"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/sign-in"
+                className="block text-sm font-medium text-zinc-600 hover:text-zinc-900"
+                onClick={closeMobileMenu}
+              >
+                Sign In
+              </Link>
+            )}
           </div>
         </div>,
         document.body
