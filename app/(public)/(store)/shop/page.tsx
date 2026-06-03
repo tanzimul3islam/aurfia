@@ -71,14 +71,6 @@ export default function ShopPage() {
       );
     }
 
-    if (filters.categories.length > 0) {
-      filtered = filtered.filter((p) =>
-        filters.categories.some(
-          (c) => p.category?.toLowerCase().replace(/[^a-z0-9]+/g, '') === c,
-        ),
-      );
-    }
-
     if (filters.priceRange[0] > bounds[0] || filters.priceRange[1] < bounds[1]) {
       filtered = filtered.filter(
         (p) =>

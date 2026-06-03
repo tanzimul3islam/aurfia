@@ -22,7 +22,7 @@ export default function Header() {
   const [profileOpen, setProfileOpen] = useState(false);
   const defaultCategoryId = shopMenuCategories[0]?.id ?? '';
   const [activeCategoryId, setActiveCategoryId] = useState(defaultCategoryId);
-  const [mobileActiveCategoryId, setMobileActiveCategoryId] = useState<string | null>(null);
+
   const { data: session } = useSession();
   const { getTotalItems, isOpen, setIsOpen } = useCartStore();
   const cartItemCount = mounted ? getTotalItems() : 0;
@@ -35,12 +35,9 @@ export default function Header() {
 
   const activeCategory =
     shopMenuCategories.find((category) => category.id === activeCategoryId) ?? null;
-  const mobileActiveCategory =
-    shopMenuCategories.find((category) => category.id === mobileActiveCategoryId) ?? null;
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
-    setMobileActiveCategoryId(null);
   };
 
   // Hide header in admin area
@@ -250,10 +247,8 @@ export default function Header() {
                 ].join(' ')}
                 onMouseEnter={openShopMenu}
               >
-                <div
-                  className={`px-8 md:px-10 ${activeCategory ? 'py-8 md:py-10' : 'py-1 md:py-2'}`}
-                >
-                  <div className={`pb-6 ${activeCategory ? 'border-b border-black/10' : ''}`}>
+                <div className="px-8 md:px-10 py-8 md:py-10">
+                  <div>
 		                    <div
 		                      className="mt-4 w-full"
 		                      style={{
@@ -293,34 +288,7 @@ export default function Header() {
 	                    </div>
 	                  </div>
 
-	                  {activeCategory ? (
-	                    <div className="pt-8">
-	                      <div className="grid grid-cols-2 gap-10">
-	                        {activeCategory.groups.map((group) => (
-	                          <div key={group.label}>
-	                            <div className="text-[11px] tracking-[0.18em] uppercase text-zinc-500">
-	                              {group.label}
-	                            </div>
-	                            <div className="mt-5 grid grid-cols-1 gap-2">
-	                              {group.items.map((item) => (
-	                                <Link
-	                                  key={item.slug}
-	                                  href={`/shop?category=${activeCategory.id}&subcategory=${item.slug}`}
-	                                  role="menuitem"
-	                                  className="font-serif text-[15px] leading-8 text-zinc-900/90 hover:text-zinc-900 transition-colors duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-zinc-900/30 focus-visible:ring-offset-4 focus-visible:ring-offset-[#FBFAF8]"
-	                                  onClick={closeShopMenu}
-	                                >
-	                                  <span className="border-b border-transparent hover:border-zinc-900/25 transition-[border-color] duration-200">
-	                                    {item.name}
-	                                  </span>
-	                                </Link>
-	                              ))}
-	                            </div>
-	                          </div>
-	                        ))}
-	                      </div>
-	                    </div>
-	                  ) : null}
+
 	                </div>
 	              </div>
 	            </div>
@@ -449,7 +417,6 @@ export default function Header() {
               aria-label="Open menu"
               onClick={() => {
                 setIsMobileMenuOpen(true);
-                setMobileActiveCategoryId(null);
               }}
             >
               <Menu size={20} />
@@ -492,69 +459,17 @@ export default function Header() {
               </button>
 
               {isMobileShopOpen && (
-                <div className="pt-5 space-y-7">
-                  <div>
-                    <div className="mt-3 space-y-1">
-                      {shopMenuCategories.map((category) => {
-                        const isActive = mobileActiveCategoryId === category.id;
-                        return (
-                          <button
-                            key={category.id}
-                            type="button"
-                            className="w-full flex items-center justify-between min-h-[44px] font-serif text-[15px] text-zinc-900/90 border-b border-black/10 py-2 transition-colors duration-150 hover:text-zinc-900 cursor-pointer"
-                            onClick={() =>
-                              setMobileActiveCategoryId((prev) =>
-                                prev === category.id ? null : category.id,
-                              )
-                            }
-                          >
-                            <span>{category.label}</span>
-                            <span className="text-xs text-zinc-500">{isActive ? '—' : '+'}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {mobileActiveCategory ? (
-                    <div>
-                      <div className="text-[13px] uppercase tracking-[0.3em] text-zinc-500">
-                        {mobileActiveCategory.label}
-                      </div>
-                      <Link
-                        href={mobileActiveCategory.href}
-                        className="inline-flex items-center text-sm font-semibold text-zinc-900"
-                        onClick={closeMobileMenu}
-                      >
-                        View all {mobileActiveCategory.label}
-                      </Link>
-                      <div className="mt-5 space-y-7">
-                        {mobileActiveCategory.groups.map((group) => (
-                          <div key={group.label}>
-                            <div className="text-[11px] tracking-[0.18em] uppercase text-zinc-500">
-                              {group.label}
-                            </div>
-                            <div className="mt-3 space-y-1">
-                              {group.items.map((item) => (
-                                <Link
-                                  key={item.slug}
-                                  href={`/shop?category=${mobileActiveCategory.id}&subcategory=${item.slug}`}
-                                  className="flex items-center min-h-[44px] font-serif text-[15px] text-zinc-900/90"
-                                  onClick={closeMobileMenu}
-                                >
-                                  <span className="border-b border-transparent hover:border-zinc-900/25 transition-[border-color] duration-200">
-                                    {item.name}
-                                  </span>
-                                </Link>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-sm text-zinc-500">Tap a category to see subcategories.</div>
-                  )}
+                <div className="pt-5 space-y-1">
+                  {shopMenuCategories.map((category) => (
+                    <Link
+                      key={category.id}
+                      href={category.href}
+                      className="flex items-center min-h-[44px] font-serif text-[15px] text-zinc-900/90 border-b border-black/10 py-2 transition-colors duration-150 hover:text-zinc-900"
+                      onClick={closeMobileMenu}
+                    >
+                      <span>{category.label}</span>
+                    </Link>
+                  ))}
                 </div>
               )}
             </div>

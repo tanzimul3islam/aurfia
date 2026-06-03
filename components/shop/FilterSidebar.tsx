@@ -1,12 +1,10 @@
 "use client";
 
 import { X } from "lucide-react";
-import { shopMenuCategories } from "@/lib/shop-menu";
 import PriceRangeFilter from "./PriceRangeFilter";
 import RatingFilter from "./RatingFilter";
 
 export type Filters = {
-  categories: string[];
   priceRange: [number, number];
   minRating: number | null;
 };
@@ -15,7 +13,6 @@ export const defaultFilters = (
   allMin: number,
   allMax: number,
 ): Filters => ({
-  categories: [],
   priceRange: [allMin, allMax],
   minRating: null,
 });
@@ -31,21 +28,12 @@ export default function FilterSidebar({
   priceBounds: [number, number];
   onClose?: () => void;
 }) {
-  const setCategory = (id: string) => {
-    const next = filters.categories.includes(id)
-      ? filters.categories.filter((c) => c !== id)
-      : [...filters.categories, id];
-    onChange({ ...filters, categories: next });
-  };
-
   const hasAnyFilter =
-    filters.categories.length > 0 ||
     filters.priceRange[0] !== priceBounds[0] ||
     filters.priceRange[1] !== priceBounds[1] ||
     filters.minRating !== null;
 
   const activeCount =
-    filters.categories.length +
     (filters.minRating !== null ? 1 : 0) +
     (filters.priceRange[0] !== priceBounds[0] ||
     filters.priceRange[1] !== priceBounds[1]
@@ -69,27 +57,6 @@ export default function FilterSidebar({
               <X size={16} />
             </button>
           )}
-        </div>
-
-        {/* Category */}
-        <div className="mb-6">
-          <div className="text-xs uppercase tracking-wider text-zinc-500 mb-2">Category</div>
-          <div className="space-y-1">
-            {shopMenuCategories.map((cat) => (
-              <label
-                key={cat.id}
-                className="flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900 cursor-pointer py-0.5"
-              >
-                <input
-                  type="checkbox"
-                  checked={filters.categories.includes(cat.id)}
-                  onChange={() => setCategory(cat.id)}
-                  className="accent-zinc-900 w-3.5 h-3.5"
-                />
-                {cat.label}
-              </label>
-            ))}
-          </div>
         </div>
 
         {/* Price Range */}
