@@ -235,7 +235,7 @@ export default function ProductPage() {
                           <div className="w-full h-full flex items-center justify-center text-neutral-400 text-[9px]">No image</div>
                         )}
                       </div>
-                      <div className="text-[11px] font-semibold text-zinc-800 leading-tight mt-1">{variant.title ?? "Option"}</div>
+                      <div className="text-[11px] font-semibold text-zinc-800 leading-snug mt-1 break-words line-clamp-2">{variant.title ?? "Option"}</div>
                     </button>
                   ))}
                 </div>
