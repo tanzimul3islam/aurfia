@@ -194,10 +194,10 @@ export default function ProductPage() {
           <span className="text-black">{product.name}</span>
         </nav>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           <div className="space-y-4">
             <div className="border border-black/10 rounded-sm overflow-hidden">
-              <div className="w-full bg-neutral-100" style={{ aspectRatio: "4/5" }}>
+              <div className="w-full bg-neutral-100" style={{ aspectRatio: "4/3" }}>
                 <img
                   src={product.images[currentImageIndex]?.url || product.images[0]?.url}
                   alt={product.name}
@@ -219,6 +219,13 @@ export default function ProductPage() {
                 ))}
               </div>
             )}
+
+            {/* Reviews */}
+            <section className="pt-12">
+              <h2 className="font-serif text-[28px] md:text-[32px] mb-8">Reviews</h2>
+              <ReviewList productId={product.id} refreshKey={reviewRefreshKey} />
+              <ReviewForm productId={product.id} onReviewSubmitted={() => setReviewRefreshKey(k => k + 1)} />
+            </section>
           </div>
 
           <div className="space-y-6">
@@ -325,13 +332,6 @@ export default function ProductPage() {
             </div>
           </div>
         </div>
-
-        {/* Reviews */}
-        <section className="mt-16 lg:mt-20 max-w-lg">
-          <h2 className="font-serif text-[28px] md:text-[32px] mb-8">Reviews</h2>
-          <ReviewList productId={product.id} refreshKey={reviewRefreshKey} />
-          <ReviewForm productId={product.id} onReviewSubmitted={() => setReviewRefreshKey(k => k + 1)} />
-        </section>
 
         {similarProducts.length > 0 && (
           <section className="mt-16 lg:mt-20">
