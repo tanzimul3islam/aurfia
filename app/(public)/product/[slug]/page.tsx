@@ -177,7 +177,7 @@ export default function ProductPage() {
                 <img
                   src={currentVariant?.imageUrl || product.images[currentImageIndex]?.url || product.images[0]?.url}
                   alt={product.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover text-transparent"
                 />
               </div>
             </div>
@@ -190,7 +190,7 @@ export default function ProductPage() {
                     onClick={() => setCurrentImageIndex(index)}
                     className={`border rounded-sm overflow-hidden hover:border-black/20 ${currentImageIndex === index ? "border-black ring-1 ring-black/20" : "border-black/10"}`}
                   >
-                    <img src={image.url} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover"/>
+                    <img src={image.url} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover text-transparent"/>
                   </button>
                 ))}
               </div>
@@ -216,27 +216,26 @@ export default function ProductPage() {
 
             {product.variants.length > 0 && (
               <div className="space-y-2">
-                <h3 className="text-sm font-medium">Available Options</h3>
-                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+                <h3 className="text-sm font-medium text-zinc-900">Available Options</h3>
+                <div className="flex flex-wrap gap-1.5">
                   {product.variants.map((variant, idx) => (
                     <button
                       key={variant.id}
                       onClick={() => setSelectedVariantIndex(idx)}
-                      className={`border rounded-sm p-1.5 text-left hover:border-black/50 transition ${
+                      className={`border rounded-sm p-1 text-center hover:border-black/60 transition w-[100px] ${
                         idx === selectedVariantIndex
                           ? "border-black ring-1 ring-black/20"
                           : "border-black/10"
                       }`}
                     >
-                      <div className="w-full aspect-[4/5] bg-neutral-100 mb-1 overflow-hidden rounded-sm">
+                      <div className="w-full aspect-[4/3] bg-neutral-100 overflow-hidden rounded-sm">
                         {variant.imageUrl ? (
-                          <img src={variant.imageUrl} alt={variant.title ?? ""} className="w-full h-full object-cover" />
+                          <img src={variant.imageUrl} alt={variant.title ?? ""} className="w-full h-full object-cover text-transparent" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-neutral-400 text-xs">No image</div>
+                          <div className="w-full h-full flex items-center justify-center text-neutral-400 text-[9px]">No image</div>
                         )}
                       </div>
-                      <div className="text-xs font-medium truncate leading-tight">{variant.title ?? "Option"}</div>
-                      <div className="text-xs text-neutral-600">${(variant.sellingPriceCents / 100).toFixed(2)}</div>
+                      <div className="text-[11px] font-semibold text-zinc-800 leading-tight mt-1">{variant.title ?? "Option"}</div>
                     </button>
                   ))}
                 </div>
