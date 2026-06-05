@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCartStore } from '@/lib/cart-store'
 import { checkoutAction } from '@/actions/publicApis/checkout'
+import { OptimizedImage } from '@/components/optimized-image'
 
 type Addr = {
   firstName: string; lastName: string; email: string; phone?: string;
@@ -168,7 +169,7 @@ export default function CheckoutPage() {
           {items.map(item=>(
             <div key={item.id} className="flex gap-3">
               <div className="w-[64px] h-[80px] border border-black/10 overflow-hidden" style={{aspectRatio:'4/5', background:'#F5F5F5'}}>
-                <img src={item.image || ''} alt="" className="w-full h-full object-cover" />
+                <OptimizedImage src={item.image || ''} alt="" width={200} height={250} className="w-full h-full" imgClassName="w-full h-full object-cover" />
               </div>
               <div className="min-w-0 flex-1">
                 <div className="truncate text-sm">{item.name}</div>

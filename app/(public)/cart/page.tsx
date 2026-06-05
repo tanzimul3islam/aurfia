@@ -1,6 +1,7 @@
 'use client'
 import { useCartStore } from '@/lib/cart-store'
 import Link from 'next/link'
+import { OptimizedImage } from '@/components/optimized-image'
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, getTotalPrice } = useCartStore()
@@ -49,10 +50,13 @@ export default function CartPage() {
                   className="shrink-0 w-[120px] h-[150px] border border-black/10 overflow-hidden"
                   style={{ aspectRatio: '4/5', background: '#F5F5F5' }}
                 >
-                  <img
+                  <OptimizedImage
                     src={item.image ?? '/placeholder.png'}
                     alt={item.name}
-                    className="w-full h-full object-cover"
+                    width={400}
+                    height={500}
+                    className="w-full h-full"
+                    imgClassName="w-full h-full object-cover"
                   />
                 </Link>
 

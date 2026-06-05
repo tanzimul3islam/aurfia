@@ -7,6 +7,7 @@ import { useCartStore } from "@/lib/cart-store";
 import ProductCard from "@/components/product-card";
 import Toast from "@/components/Toast";
 import ProductStructuredData from "@/components/ProductStructuredData";
+import { OptimizedImage } from "@/components/optimized-image";
 import {
   getProductBySlug,
   getSimilarProducts,
@@ -198,10 +199,14 @@ export default function ProductPage() {
           <div className="space-y-4">
             <div className="border border-black/10 rounded-sm overflow-hidden">
               <div className="w-full bg-neutral-100" style={{ aspectRatio: "4/3" }}>
-                <img
+                <OptimizedImage
                   src={product.images[currentImageIndex]?.url || product.images[0]?.url}
                   alt={product.name}
-                  className="w-full h-full object-cover text-transparent"
+                  width={800}
+                  height={600}
+                  priority
+                  className="w-full h-full"
+                  imgClassName="w-full h-full object-cover"
                 />
               </div>
             </div>
@@ -214,7 +219,7 @@ export default function ProductPage() {
                     onClick={() => setCurrentImageIndex(index)}
                     className={`border rounded-sm overflow-hidden hover:border-black/20 ${currentImageIndex === index ? "border-black ring-1 ring-black/20" : "border-black/10"}`}
                   >
-                    <img src={image.url} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover text-transparent"/>
+                    <OptimizedImage src={image.url} alt={`${product.name} ${index + 1}`} width={200} height={150} className="w-full h-full" imgClassName="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>

@@ -38,8 +38,8 @@ export default async function Home() {
           </div>
 
           <div className="px-4 md:px-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-            {featuredProducts.map((p) => (
-              <ProductCard key={p.id} product={p} />
+            {featuredProducts.map((p, i) => (
+              <ProductCard key={p.id} product={p} priority={i < 4} />
             ))}
           </div>
         </section>

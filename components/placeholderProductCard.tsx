@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Heart, ShoppingBag } from 'lucide-react';
 import Toast from './Toast';
 import { useCartStore } from '@/lib/cart-store';
+import { OptimizedImage } from './optimized-image';
 
 type PlaceholderProduct = {
   id: number;
@@ -14,7 +15,7 @@ type PlaceholderProduct = {
   slug: string;
 };
 
-const PlaceholderProductCard = ({ product }: { product: PlaceholderProduct }) => {
+const PlaceholderProductCard = ({ product, priority }: { product: PlaceholderProduct; priority?: boolean }) => {
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
   const [isHovered, setIsHovered] = React.useState(false);
   const [isFavorite, setIsFavorite] = React.useState(false);
@@ -93,12 +94,14 @@ const PlaceholderProductCard = ({ product }: { product: PlaceholderProduct }) =>
           {hasImages ? (
             <>
               <div className="w-full bg-neutral-100 rounded-sm overflow-hidden" style={{ aspectRatio: '4/5' }}>
-                <img
+                <OptimizedImage
                   src={images[currentImageIndex]}
                   alt=""
                   width={800}
                   height={1000}
-                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                  priority={priority}
+                  className="w-full h-full"
+                  imgClassName="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                 />
               </div>
 

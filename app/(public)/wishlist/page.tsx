@@ -4,6 +4,7 @@ import { useState, useEffect, useTransition } from 'react';
 import { Heart } from 'lucide-react';
 import { getFavorites } from '@/actions/publicApis/faveroutes';
 import { useCartStore } from '@/lib/cart-store';
+import { OptimizedImage } from '@/components/optimized-image';
 
 type FavoriteItem = {
   id: number;
@@ -66,8 +67,11 @@ export default function WishlistPage() {
 
   if (loading || isPending) {
     return (
-      <div className="container py-12 text-center">
-        <div className="text-lg">Loading favorites...</div>
+      <div className="container py-12 flex justify-center">
+        <svg className="animate-spin h-6 w-6 text-neutral-400" viewBox="0 0 24 24" fill="none">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
       </div>
     );
   }
@@ -103,10 +107,13 @@ export default function WishlistPage() {
                 style={{ aspectRatio: '4/5', background: '#F5F5F5' }}
               >
                 <a href={`/product/${p.slug}`} className="block w-full h-full">
-                  <img
+                  <OptimizedImage
                     src={p.images?.[0]?.url || ''}
                     alt={p.name}
-                    className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                    width={400}
+                    height={500}
+                    className="w-full h-full"
+                    imgClassName="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
                   />
                 </a>
                 <button

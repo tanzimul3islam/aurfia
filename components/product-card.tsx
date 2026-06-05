@@ -1,11 +1,10 @@
 'use client';
 
-// import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-// import { Product, ProductImage } from '@prisma/client';
 import { useCartStore } from '@/lib/cart-store';
 import Toast from './Toast';
+import { OptimizedImage } from './optimized-image';
 
 type P = any;
 
@@ -30,7 +29,7 @@ function CartIcon() {
   )
 }
 
-export default function ProductCard({ product }: { product: P }) {
+export default function ProductCard({ product, priority }: { product: P; priority?: boolean }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -106,12 +105,14 @@ export default function ProductCard({ product }: { product: P }) {
         {hasImages ? (
           <>
             <div className="w-full bg-neutral-50 overflow-hidden relative" style={{aspectRatio: '4/5'}}>
-              <img
+              <OptimizedImage
                 src={images[currentImageIndex].url}
                 alt=""
                 width={1200}
                 height={1500}
-                className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-105"
+                priority={priority}
+                className="w-full h-full"
+                imgClassName="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-105"
               />
 
               {images.length > 1 && isHovered && (

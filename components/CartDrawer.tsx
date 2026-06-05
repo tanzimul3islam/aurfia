@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Trash2 } from 'lucide-react'
 import { useCartStore } from '@/lib/cart-store'
 import Link from 'next/link'
+import { OptimizedImage } from './optimized-image'
 
 export default function CartDrawer({ open, onClose }:{
   open:boolean; onClose: ()=>void;
@@ -73,7 +74,7 @@ export default function CartDrawer({ open, onClose }:{
               <Link href={`/product/${item.slug}`}
                  className="shrink-0 w-[96px] h-[120px] border border-black/10 overflow-hidden"
                  style={{ aspectRatio:'4 / 5', background:'#F5F5F5' }}>
-                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                <OptimizedImage src={item.image ?? ''} alt={item.name} width={400} height={500} className="w-full h-full" imgClassName="w-full h-full object-cover" />
               </Link>
               <div className="min-w-0 flex-1">
                 <Link href={`/product/${item.slug}`} className="block truncate text-sm font-medium">{item.name}</Link>

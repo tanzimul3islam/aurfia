@@ -259,9 +259,10 @@ export default function ShopPage() {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-              {paginatedProducts.map(product => (
-                <ProductCard key={product.id} product={product} />
-              ))}
+              {paginatedProducts.map((product, i) => {
+                const globalIndex = (currentPage - 1) * PAGE_SIZE + i;
+                return <ProductCard key={product.id} product={product} priority={globalIndex < 4} />;
+              })}
             </div>
 
             {filteredProducts.length === 0 && (
