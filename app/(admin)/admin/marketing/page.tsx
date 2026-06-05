@@ -42,7 +42,6 @@ export default function AdminMarketing() {
           <div className="text-sm text-blue-700 space-y-1">
             <p>• <strong>SEO:</strong> Use relevant keywords in product descriptions</p>
             <p>• <strong>Analytics:</strong> Track your visitor sources and conversions</p>
-            <p>• <strong>Newsletter:</strong> Send regular offers to your subscribers</p>
             <p>• <strong>Social Media:</strong> Share your products on Instagram and Facebook</p>
           </div>
         </div>

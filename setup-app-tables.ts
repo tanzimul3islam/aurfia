@@ -99,12 +99,6 @@ db.exec(`
     enabled INTEGER DEFAULT 0
   );
 
-  CREATE TABLE IF NOT EXISTS subscribers (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT NOT NULL UNIQUE,
-    status TEXT NOT NULL DEFAULT 'active',
-    subscribed_at TEXT DEFAULT (datetime('now'))
-  );
 `);
 
 console.log('App tables created successfully');

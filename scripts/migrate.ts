@@ -30,7 +30,7 @@ async function insertBulk(
 
 async function main() {
   // Step 1: Drop
-  const drop = `DROP TABLE IF EXISTS verification, account, session, product_options, product_images, product_breadcrumbs, products, order_items, orders, blog_posts, seo_meta, analytics_settings, subscribers, "user" CASCADE;`;
+  const drop = `DROP TABLE IF EXISTS verification, account, session, product_options, product_images, product_breadcrumbs, products, order_items, orders, blog_posts, seo_meta, analytics_settings, "user" CASCADE;`;
   const pg = await PG.connect();
   try { await pg.query(drop); } finally { pg.release(); }
   console.log('Dropped tables.');
@@ -104,10 +104,6 @@ async function main() {
     );
     CREATE TABLE IF NOT EXISTS analytics_settings (
       id TEXT PRIMARY KEY, ga_code TEXT, enabled BOOLEAN DEFAULT false
-    );
-    CREATE TABLE IF NOT EXISTS subscribers (
-      id SERIAL PRIMARY KEY, email TEXT NOT NULL UNIQUE,
-      status TEXT NOT NULL DEFAULT 'active', subscribed_at TIMESTAMP DEFAULT NOW()
     );
   `;
   const pg2 = await PG.connect();

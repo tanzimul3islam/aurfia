@@ -31,6 +31,7 @@ export default async function AdminLayout({
             <Link href="/admin/orders" className="text-zinc-600 hover:text-zinc-900 transition-colors">Orders</Link>
             <Link href="/admin/reviews" className="text-zinc-600 hover:text-zinc-900 transition-colors">Reviews</Link>
             <Link href="/admin/marketing" className="text-zinc-600 hover:text-zinc-900 transition-colors">Marketing</Link>
+            <Link href="/admin/chatbot" className="text-zinc-600 hover:text-zinc-900 transition-colors">Chatbot</Link>
           </div>
           <Link href="/" className="text-zinc-500 hover:text-zinc-800 transition-colors text-sm">Back to Site →</Link>
         </div>

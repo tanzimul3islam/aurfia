@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { products, orders, reviews, subscribers, user } from "@/db/schema";
+import { products, orders, reviews, user } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 
 export default async function AdminHome() {
@@ -17,9 +17,6 @@ export default async function AdminHome() {
   const [reviewCount] = await db
     .select({ count: sql<number>`count(*)` })
     .from(reviews);
-  const [subscriberCount] = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(subscribers);
   const [userCount] = await db
     .select({ count: sql<number>`count(*)` })
     .from(user);
@@ -29,7 +26,6 @@ export default async function AdminHome() {
     { label: "Orders", value: orderCount.count, href: "/admin/orders" },
     { label: "Pending", value: pendingCount.count, href: "/admin/orders" },
     { label: "Reviews", value: reviewCount.count, href: "/admin/reviews" },
-    { label: "Subscribers", value: subscriberCount.count, href: "#" },
     { label: "Users", value: userCount.count, href: "/admin-login/create-admin" },
   ];
 

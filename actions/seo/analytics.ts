@@ -26,6 +26,11 @@ export async function saveAnalyticsSettings(gaCode: string, enabled: boolean) {
 }
 
 export async function getAnalyticsSettings() {
-  const result = await db.select().from(analyticsSettings).limit(1);
-  return result[0] || { id: 'default', gaCode: '', enabled: false };
+  try {
+    const result = await db.select().from(analyticsSettings).limit(1);
+    return result[0] || { id: 'default', gaCode: '', enabled: false };
+  } catch (err) {
+    console.error('getAnalyticsSettings failed:', err);
+    return { id: 'default', gaCode: '', enabled: false };
+  }
 }

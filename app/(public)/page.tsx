@@ -3,6 +3,8 @@ import ProductCard from '@/components/product-card';
 import Link from 'next/link';
 import PlaceholderProductCard from '@/components/placeholderProductCard';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const latestProducts = await getLatestProducts(8);
   const allProducts = await getAllProducts();

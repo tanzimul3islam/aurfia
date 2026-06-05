@@ -1,4 +1,4 @@
-import { pgTable, serial, text, integer, doublePrecision, timestamp, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, integer, doublePrecision, timestamp, boolean, vector } from 'drizzle-orm/pg-core';
 
 // ─── Better Auth tables ────────────────────────────────────────────
 
@@ -148,13 +148,6 @@ export const analyticsSettings = pgTable("analytics_settings", {
   enabled: boolean("enabled").default(false),
 });
 
-export const subscribers = pgTable("subscribers", {
-  id: serial("id").primaryKey(),
-  email: text("email").notNull().unique(),
-  status: text("status").notNull().default("active"),
-  subscribedAt: timestamp("subscribed_at", { mode: 'string' }).defaultNow(),
-});
-
 export const reviews = pgTable("reviews", {
   id: serial("id").primaryKey(),
   productId: integer("product_id").notNull().references(() => products.id),
@@ -164,5 +157,43 @@ export const reviews = pgTable("reviews", {
   title: text("title"),
   content: text("content").notNull(),
   isVerifiedPurchase: boolean("is_verified_purchase").default(false),
+  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+});
+
+// ─── Chatbot tables ────────────────────────────────────────────────
+
+export const chatDocuments = pgTable("chat_documents", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  fileType: text("file_type"),
+  fileUrl: text("file_url"),
+  chunkCount: integer("chunk_count").default(0),
+  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+});
+
+export const chatDocumentChunks = pgTable("chat_document_chunks", {
+  id: serial("id").primaryKey(),
+  documentId: integer("document_id").references(() => chatDocuments.id, { onDelete: 'cascade' }),
+  content: text("content").notNull(),
+  embedding: vector("embedding", { dimensions: 1536 }),
+  metadata: text("metadata"),
+  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+});
+
+export const chatConversations = pgTable("chat_conversations", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id),
+  title: text("title").default("New conversation"),
+  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+});
+
+export const chatMessages = pgTable("chat_messages", {
+  id: serial("id").primaryKey(),
+  conversationId: integer("conversation_id").notNull().references(() => chatConversations.id, { onDelete: 'cascade' }),
+  role: text("role").notNull(),
+  content: text("content").notNull(),
   createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
 });
