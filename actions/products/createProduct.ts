@@ -2,12 +2,11 @@
 
 import { db } from '@/lib/db';
 import { products, productImages, productBreadcrumbs, productOptions } from '@/db/schema';
-import { eq } from 'drizzle-orm';
 import { isSuperAdminSession } from '../auth/isSuperAdminSession';
 import { isUserAdmin } from '../auth/isUserAdmin';
 import { revalidatePath } from 'next/cache';
 
-export async function updateProduct(formData: FormData, productId: number) {
+export async function createProduct(formData: FormData) {
   const isSuperAdmin = await isSuperAdminSession();
   const isAdmin = await isUserAdmin();
   if (!isSuperAdmin.isLoggedIn && !isAdmin) throw new Error('Unauthorized');
@@ -33,22 +32,24 @@ export async function updateProduct(formData: FormData, productId: number) {
   const variants: { title: string; price: string; sellingPrice: string; imageUrl: string }[] =
     variantsRaw ? JSON.parse(variantsRaw) : [];
 
-  await db
-    .update(products)
-    .set({
+  const [result] = await db
+    .insert(products)
+    .values({
       productTitle: title,
       description: description || null,
       sellingPrice,
       priceAmount,
       sku,
       brandOrDesigner: brand,
+      priceCurrency: 'USD',
       readyToShipDays,
       qualityLevel,
       detailsJson,
     })
-    .where(eq(products.id, productId));
+    .returning({ id: products.id });
 
-  await db.delete(productBreadcrumbs).where(eq(productBreadcrumbs.productId, productId));
+  const productId = result.id;
+
   if (category) {
     const bcValues = [
       { productId, breadcrumb: 'Jewelry', sortOrder: 0 },
@@ -60,7 +61,6 @@ export async function updateProduct(formData: FormData, productId: number) {
     await db.insert(productBreadcrumbs).values(bcValues);
   }
 
-  await db.delete(productImages).where(eq(productImages.productId, productId));
   if (imageUrls.length > 0) {
     await db.insert(productImages).values(
       imageUrls.map((url, i) => ({
@@ -71,7 +71,6 @@ export async function updateProduct(formData: FormData, productId: number) {
     );
   }
 
-  await db.delete(productOptions).where(eq(productOptions.productId, productId));
   for (const v of variants) {
     if (v.title) {
       await db.insert(productOptions).values({
@@ -85,5 +84,4 @@ export async function updateProduct(formData: FormData, productId: number) {
   }
 
   revalidatePath('/admin/products/list');
-  revalidatePath(`/admin/products/${productId}`);
 }

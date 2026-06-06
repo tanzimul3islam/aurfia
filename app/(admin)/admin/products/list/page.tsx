@@ -1,5 +1,6 @@
 import { getProducts } from "@/actions/products/getProducts";
 import Link from "next/link";
+import DeleteProductButton from "@/components/admin/DeleteProductButton";
 
 export default async function AdminProductList({ searchParams }: {searchParams: Promise<{[key: string]: string | string[] | undefined}>}) {
   const page = Number((await searchParams).page) || 1;
@@ -16,6 +17,10 @@ export default async function AdminProductList({ searchParams }: {searchParams: 
         <div>
           <h1 className="font-serif text-[32px] tracking-[-0.01em]">Products</h1>
           <p className="text-neutral-500 mt-1 text-sm">{total} product{total !== 1 ? "s" : ""}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link href="/admin/products/import" className="btn btn-sm btn-secondary">Bulk Import</Link>
+          <Link href="/admin/products/new" className="btn btn-primary text-sm">+ Add Product</Link>
         </div>
       </div>
 
@@ -42,6 +47,8 @@ export default async function AdminProductList({ searchParams }: {searchParams: 
                 </div>
                 <div className="flex gap-2 ml-4 shrink-0">
                   <Link href={`/admin/products/${product.id}`} className="btn btn-sm">View</Link>
+                  <Link href={`/admin/products/${product.id}/edit`} className="btn btn-sm btn-secondary">Edit</Link>
+                  <DeleteProductButton productId={product.id} />
                 </div>
               </div>
             </div>

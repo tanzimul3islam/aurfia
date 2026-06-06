@@ -43,6 +43,14 @@ export function OptimizedImage({
     return () => observer.disconnect();
   }, [inView]);
 
+  useEffect(() => {
+    if (!inView) return;
+    const img = containerRef.current?.querySelector('img');
+    if (img?.complete) {
+      setLoaded(true);
+    }
+  }, [inView]);
+
   return (
     <div
       ref={containerRef}
@@ -60,6 +68,7 @@ export function OptimizedImage({
           width={width}
           height={height}
           onLoad={() => setLoaded(true)}
+          onError={() => setLoaded(true)}
           loading={priority ? 'eager' : 'lazy'}
           className={imgClassName}
           style={{ opacity: loaded ? 1 : 0, transition: 'opacity 0.4s ease-out' }}

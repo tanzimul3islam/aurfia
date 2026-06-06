@@ -28,6 +28,7 @@ export default async function AdminLayout({
           <div className="flex items-center gap-6 text-sm">
             <Link href="/admin" className="text-zinc-600 hover:text-zinc-900 transition-colors font-medium">Dashboard</Link>
             <Link href="/admin/products" className="text-zinc-600 hover:text-zinc-900 transition-colors">Products</Link>
+            <Link href="/admin/media" className="text-zinc-600 hover:text-zinc-900 transition-colors">Media</Link>
             <Link href="/admin/orders" className="text-zinc-600 hover:text-zinc-900 transition-colors">Orders</Link>
             <Link href="/admin/reviews" className="text-zinc-600 hover:text-zinc-900 transition-colors">Reviews</Link>
             <Link href="/admin/marketing" className="text-zinc-600 hover:text-zinc-900 transition-colors">Marketing</Link>

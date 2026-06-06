@@ -27,7 +27,10 @@ export default async function ProductDetailPage({ params }: Props) {
             <h1 className="font-serif text-[28px] tracking-[-0.01em] mb-1">{product.name}</h1>
             {product.sku && <p className="text-sm text-neutral-500">SKU: {product.sku}</p>}
           </div>
-          <p className="text-xl font-medium">${(product.priceCents / 100).toFixed(2)} <span className="text-sm text-neutral-500">{product.currency}</span></p>
+          <div className="flex items-center gap-3">
+            <Link href={`/admin/products/${product.id}/edit`} className="btn btn-sm btn-secondary">Edit</Link>
+            <p className="text-xl font-medium">${(product.priceCents / 100).toFixed(2)} <span className="text-sm text-neutral-500">{product.currency}</span></p>
+          </div>
         </div>
 
         <p className="text-neutral-700 mb-6 leading-relaxed">{product.description}</p>
