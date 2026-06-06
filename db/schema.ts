@@ -154,6 +154,15 @@ export const analyticsSettings = pgTable("analytics_settings", {
   enabled: boolean("enabled").default(false),
 });
 
+export const siteSettings = pgTable("site_settings", {
+  id: text("id").primaryKey(),
+  discountBannerText: text("discount_banner_text"),
+  discountBannerEnabled: boolean("discount_banner_enabled").default(false),
+  discountBannerLink: text("discount_banner_link"),
+  discountBannerBgColor: text("discount_banner_bg_color").default('#000000'),
+  discountBannerTextColor: text("discount_banner_text_color").default('#ffffff'),
+});
+
 export const reviews = pgTable("reviews", {
   id: serial("id").primaryKey(),
   productId: integer("product_id").notNull().references(() => products.id),

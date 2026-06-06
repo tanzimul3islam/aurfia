@@ -11,7 +11,7 @@ export default function Toast({ text, open, onClose }: { text: string; open: boo
   if (!open) return null
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-black text-white text-sm px-4 h-10 grid place-items-center rounded-none">
+    <div className="fixed top-4 right-4 z-50 bg-black text-white text-sm px-4 h-10 grid place-items-center rounded-none">
       {text}
     </div>
   )

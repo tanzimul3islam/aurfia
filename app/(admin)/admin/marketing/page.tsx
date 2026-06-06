@@ -33,6 +33,15 @@ export default function AdminMarketing() {
             </p>
             <span className="text-sm text-blue-600">View →</span>
           </Link>
+
+          {/* Discount Banner */}
+          <Link href="/admin/marketing/discount-banner" className="bg-white border border-black/10 rounded-sm p-6 hover:border-black/20 transition-colors">
+            <h3 className="font-medium mb-2">Discount Banner</h3>
+            <p className="text-sm text-neutral-600 mb-4">
+              Configure the announcement banner displayed at the top of the store.
+            </p>
+            <span className="text-sm text-blue-600">Configure →</span>
+          </Link>
         </div>
 
         {/* Quick Marketing Tips */}

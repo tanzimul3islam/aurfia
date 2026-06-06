@@ -196,7 +196,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-zinc-100 shadow-sm">
+    <header className="relative bg-white/95 backdrop-blur-md border-b border-zinc-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="font-serif text-xl tracking-wide text-zinc-900 hover:text-zinc-700 transition-colors">
