@@ -1,39 +1,19 @@
 import { type Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { EB_Garamond } from "next/font/google";
 import "./globals.css";
 import { getAnalyticsSettings } from "@/actions/seo/analytics";
-import './globals.css';
 import { ReactNode } from 'react';
-import { Inter, Cormorant_Garamond } from 'next/font/google';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import CookieBanner from '@/components/CookieBanner';
 import OrganizationStructuredData from '@/components/OrganizationStructuredData';
 import WebSiteStructuredData from '@/components/WebSiteStructuredData';
 
-export const inter = Inter({
+const ebGaramond = EB_Garamond({
   subsets: ['latin'],
   weight: ['400', '500', '600'],
-  variable: '--font-inter',
-  display: 'swap'
-});
-
-export const corm = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['500','600'],
-  variable: '--font-corm',
-  display: 'swap'
-});
-
-const interBody = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-});
-
-const cormorantTitle = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  variable: '--font-cormorant',
+  variable: '--font-eb',
+  display: 'swap',
 });
 
 export const metadata = {
@@ -97,17 +77,6 @@ export const metadata = {
     'theme-color': '#ffffff',
   },
 };
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-
 
 export default async function RootLayout({
   children,
@@ -116,8 +85,8 @@ export default async function RootLayout({
 }>) {
   const settings = await getAnalyticsSettings();
   return (
-    <html lang="en">
-      <body className="w-full">
+    <html lang="en" className={ebGaramond.variable}>
+      <body className="w-full font-sans">
         {children}
 
         <OrganizationStructuredData />

@@ -55,7 +55,7 @@ function ConfirmationContent() {
         </div>
         <h1 className="font-serif text-[32px] mb-2">Thank you for your order!</h1>
         <p className="text-neutral-600">Order #{order.id}</p>
-        <p className="text-sm text-neutral-500 mt-1">A confirmation email has been sent to {order.email}</p>
+        <p className="text-sm text-neutral-500 mt-1">You'll receive an email confirmation once your order ships.</p>
       </div>
 
       <div className="border border-black/10 p-6 space-y-4">

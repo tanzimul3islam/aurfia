@@ -23,10 +23,15 @@ export async function POST(req: NextRequest) {
     const session = event.data.object as any;
     const orderId = session.metadata?.orderId;
     if (orderId) {
-      await db
-        .update(orders)
-        .set({ status: 'paid' })
-        .where(eq(orders.id, Number(orderId)));
+      try {
+        await db
+          .update(orders)
+          .set({ status: 'paid' })
+          .where(eq(orders.id, Number(orderId)));
+      } catch (err) {
+        console.error('Failed to update order status', err);
+        return NextResponse.json({ error: 'Failed to update order' }, { status: 500 });
+      }
     }
   }
 

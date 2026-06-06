@@ -6,6 +6,8 @@ button, a { cursor: pointer; }
   --color-brand: #000000;
   --color-brand-accent: #8B7355;
   --color-brand-light: #F5F5F0;
+  --font-sans: var(--font-eb);
+  --font-serif: var(--font-eb);
 }
 
 @layer utilities {
