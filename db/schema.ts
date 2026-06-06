@@ -140,6 +140,12 @@ export const seoMeta = pgTable("seo_meta", {
   title: text("title"),
   description: text("description"),
   keywords: text("keywords"),
+  ogTitle: text("og_title"),
+  ogDescription: text("og_description"),
+  ogImage: text("og_image"),
+  canonicalUrl: text("canonical_url"),
+  noindex: boolean("noindex").default(false),
+  priority: doublePrecision("priority"),
 });
 
 export const analyticsSettings = pgTable("analytics_settings", {

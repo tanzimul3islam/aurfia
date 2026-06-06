@@ -1,5 +1,6 @@
 'use client';
 
+import { Loader2 } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createProduct } from '@/actions/products/createProduct';
@@ -26,6 +27,8 @@ interface ProductFormData {
   priceAmount: string;
   category: string;
   imageUrls: string[];
+  metaTitle: string;
+  metaDescription: string;
 }
 
 interface Props {
@@ -44,6 +47,8 @@ export default function ProductForm({ initialData, initialVariants, productId, i
       priceAmount: '',
       category: '',
       imageUrls: [],
+      metaTitle: '',
+      metaDescription: '',
     },
   );
   const [images, setImages] = useState<ImageItem[]>(
@@ -142,6 +147,8 @@ export default function ProductForm({ initialData, initialVariants, productId, i
     fd.append('category', form.category);
     fd.append('image_urls', JSON.stringify(images.map((img) => img.url)));
     fd.append('variants', JSON.stringify(variants.map(({ tempId, ...v }) => v)));
+    fd.append('meta_title', form.metaTitle);
+    fd.append('meta_description', form.metaDescription);
 
     try {
       if (isEdit && productId) {
@@ -349,8 +356,8 @@ export default function ProductForm({ initialData, initialVariants, productId, i
             ))}
 
             {uploading && (
-              <div className="w-24 h-24 border border-black/10 flex items-center justify-center text-xs text-neutral-400">
-                Uploading...
+              <div className="w-24 h-24 border border-black/10 flex items-center justify-center">
+                <Loader2 className="w-5 h-5 animate-spin text-neutral-400" />
               </div>
             )}
 
@@ -371,6 +378,50 @@ export default function ProductForm({ initialData, initialVariants, productId, i
             Upload images to Cloudinary. Supported: JPG, PNG, WebP.
           </p>
         </div>
+
+        {/* SEO section */}
+        <div className="md:col-span-2 space-y-4">
+          <details className="group">
+            <summary className="font-medium text-sm text-neutral-500 uppercase tracking-wider pt-2 cursor-pointer hover:text-neutral-700">
+              SEO Settings
+            </summary>
+            <div className="mt-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Meta Title (max. 60 chars)
+                </label>
+                <input
+                  name="metaTitle"
+                  value={form.metaTitle}
+                  onChange={handleChange}
+                  maxLength={60}
+                  placeholder="Leave empty to use product title"
+                  className="w-full border border-black/10 px-3 py-2 text-sm focus:outline-none focus:border-black/30"
+                />
+                <p className={`text-xs mt-1 ${form.metaTitle.length > 60 ? 'text-red-500' : 'text-neutral-500'}`}>
+                  {form.metaTitle.length}/60 characters
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Meta Description (max. 160 chars)
+                </label>
+                <textarea
+                  name="metaDescription"
+                  value={form.metaDescription}
+                  onChange={handleChange}
+                  maxLength={160}
+                  rows={3}
+                  placeholder="Brief description for search engine results"
+                  className="w-full border border-black/10 px-3 py-2 text-sm focus:outline-none focus:border-black/30 resize-none"
+                />
+                <p className={`text-xs mt-1 ${form.metaDescription.length > 160 ? 'text-red-500' : 'text-neutral-500'}`}>
+                  {form.metaDescription.length}/160 characters
+                </p>
+              </div>
+            </div>
+          </details>
+        </div>
       </div>
 
       <div className="border-t border-black/10 pt-6 flex items-center gap-4">
@@ -380,7 +431,7 @@ export default function ProductForm({ initialData, initialVariants, productId, i
           className="bg-[#0E0E0E] text-white px-6 py-2.5 text-sm hover:opacity-90 disabled:opacity-50"
         >
           {submitting
-            ? 'Saving...'
+            ? <Loader2 className="w-4 h-4 animate-spin" />
             : isEdit
               ? 'Update Product'
               : 'Create Product'}

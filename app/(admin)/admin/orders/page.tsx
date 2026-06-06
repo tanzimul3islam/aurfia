@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 import { getOrders } from '@/actions/orders/getOrders';
 import { updateOrderStatus as updateOrderStatusAction } from '@/actions/orders/updateOrder';
 
@@ -66,10 +67,10 @@ export default function AdminOrders() {
     });
   }
 
-  if (loading) return <div className="container py-12 text-center text-neutral-500">Loading orders...</div>;
+  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-neutral-400" /></div>;
 
   return (
-    <div className="container py-12">
+    <div>
       <h1 className="font-serif text-[32px] tracking-[-0.01em] mb-6">Orders</h1>
       {orders.length === 0 ? (
         <p className="text-neutral-500">No orders yet.</p>

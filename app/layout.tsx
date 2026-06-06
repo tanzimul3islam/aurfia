@@ -8,6 +8,8 @@ import { Inter, Cormorant_Garamond } from 'next/font/google';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import CookieBanner from '@/components/CookieBanner';
+import OrganizationStructuredData from '@/components/OrganizationStructuredData';
+import WebSiteStructuredData from '@/components/WebSiteStructuredData';
 
 export const inter = Inter({
   subsets: ['latin'],
@@ -117,6 +119,9 @@ export default async function RootLayout({
     <html lang="en">
       <body className="w-full">
         {children}
+
+        <OrganizationStructuredData />
+        <WebSiteStructuredData />
 
         {settings.enabled && settings.gaCode && (
           <>

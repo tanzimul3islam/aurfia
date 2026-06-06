@@ -2,8 +2,7 @@ import Link from "next/link";
 
 export default function AdminProducts() {
   return (
-    <div className="container py-12">
-      <div className="max-w-3xl">
+    <div className="max-w-3xl">
         <h1 className="font-serif text-[32px] tracking-[-0.01em] mb-2">Products</h1>
         <p className="text-neutral-600 mb-10">Manage your product catalog.</p>
 
@@ -28,7 +27,6 @@ export default function AdminProducts() {
             <p className="text-sm text-neutral-500">Upload and browse Cloudinary images</p>
           </Link>
         </div>
-      </div>
     </div>
   );
 }

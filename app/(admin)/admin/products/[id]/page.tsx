@@ -11,7 +11,7 @@ export default async function ProductDetailPage({ params }: Props) {
 
   if (!product) {
     return (
-      <div className="container py-12 text-center text-neutral-500">
+      <div className="text-center text-neutral-500">
         <h1 className="font-serif text-2xl mb-2">Product not found</h1>
         <Link href="/admin/products/list" className="text-sm text-neutral-600 underline">Back to products</Link>
       </div>
@@ -19,7 +19,7 @@ export default async function ProductDetailPage({ params }: Props) {
   }
 
   return (
-    <div className="container max-w-4xl py-12">
+    <div className="max-w-4xl">
       <Link href="/admin/products/list" className="text-sm text-neutral-500 hover:text-neutral-700 mb-6 inline-block">← Back to products</Link>
       <div className="bg-white border border-black/10 p-8">
         <div className="flex items-start justify-between mb-6">

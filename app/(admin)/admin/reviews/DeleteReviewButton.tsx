@@ -1,5 +1,6 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { useTransition } from "react";
 import { deleteReview } from "@/actions/reviews/adminReviews";
 import { useRouter } from "next/navigation";
@@ -24,7 +25,7 @@ export default function DeleteReviewButton({
       }}
       className="shrink-0 text-xs text-red-500 hover:text-red-700 disabled:opacity-50"
     >
-      {pending ? "Deleting..." : "Delete"}
+      {pending ? <Loader2 className="w-3 h-3 animate-spin inline" /> : "Delete"}
     </button>
   );
 }

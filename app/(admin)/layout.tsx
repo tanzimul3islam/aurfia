@@ -1,5 +1,7 @@
 import { isSuperAdminSession } from "@/actions/auth/isSuperAdminSession";
 import { isUserAdmin } from "@/actions/auth/isUserAdmin";
+import AdminContainer from "@/components/admin/AdminContainer";
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -33,12 +35,13 @@ export default async function AdminLayout({
             <Link href="/admin/reviews" className="text-zinc-600 hover:text-zinc-900 transition-colors">Reviews</Link>
             <Link href="/admin/marketing" className="text-zinc-600 hover:text-zinc-900 transition-colors">Marketing</Link>
             <Link href="/admin/chatbot" className="text-zinc-600 hover:text-zinc-900 transition-colors">Chatbot</Link>
+            <Link href="/admin/users" className="text-zinc-600 hover:text-zinc-900 transition-colors">Users</Link>
           </div>
-          <Link href="/" className="text-zinc-500 hover:text-zinc-800 transition-colors text-sm">Back to Site →</Link>
+          <Link href="/" className="btn btn-sm btn-secondary inline-flex items-center gap-1.5"><ArrowLeft className="w-3 h-3" /> Back to Site</Link>
         </div>
       </nav>
       <div className="min-h-screen bg-[#FBFAF8] text-[#0E0E0E] pt-16">
-        <main className="px-4 md:px-8">{children}</main>
+        <AdminContainer>{children}</AdminContainer>
       </div>
     </>
   );

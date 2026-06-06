@@ -3,7 +3,14 @@ import ProductCard from '@/components/product-card';
 import Link from 'next/link';
 import PlaceholderProductCard from '@/components/placeholderProductCard';
 
+import { buildPageMetadata } from '@/lib/seo-helper';
+import type { Metadata } from 'next';
+
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('Homepage');
+}
 
 export default async function Home() {
   const latestProducts = await getLatestProducts(8);
@@ -11,7 +18,7 @@ export default async function Home() {
   const featuredProducts = allProducts.filter((p) => p.priceCents > 30000).slice(0, 6);
 
   return (
-    <main className="pt-8">
+    <div className="pt-8">
       <section className="max-w-none py-6 md:py-8">
         <div className="px-4">
           <h1 className="font-serif font-medium tracking-[-0.01em] leading-[1.05] text-[clamp(28px,5.2vw,40px)]">
@@ -83,6 +90,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

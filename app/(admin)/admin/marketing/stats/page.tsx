@@ -1,5 +1,6 @@
 'use client';
 import { getMarketingStats } from '@/actions/seo/getMarketingStats';
+import { Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 // import { getMarketingStats } from '@/actions/getMarketingStats'; // server action
 
@@ -16,11 +17,11 @@ export default function AdminMarketingStats() {
       .finally(() => setLoading(false));
   }, [timeRange]);
 
-  if (loading) return <div className="container py-12 text-center text-neutral-500">Loading marketing stats...</div>;
+  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-neutral-400" /></div>;
   if (!stats) return null;
 
   return (
-    <div className="container py-12">
+    <div>
       <div className="flex justify-between mb-6">
         <h1 className="h2">Marketing Stats</h1>
         <select value={timeRange} onChange={e => setTimeRange(e.target.value as any)} className="border border-black/10 px-3 py-1.5 text-sm bg-white">

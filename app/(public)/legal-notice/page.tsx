@@ -1,3 +1,10 @@
+import { buildPageMetadata } from '@/lib/seo-helper';
+import type { Metadata } from 'next';
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('Legal Notice');
+}
+
 export default function LegalNoticePage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12 text-sm text-neutral-800">

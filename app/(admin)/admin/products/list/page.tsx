@@ -11,8 +11,7 @@ export default async function AdminProductList({ searchParams }: {searchParams: 
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="container py-12">
-
+    <div>
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-serif text-[32px] tracking-[-0.01em]">Products</h1>

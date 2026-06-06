@@ -59,7 +59,7 @@ export default function MediaPage() {
   };
 
   return (
-    <div className="container max-w-5xl py-12">
+    <div>
       <div className="flex items-end justify-between mb-8">
         <div>
           <h1 className="font-serif text-[28px] tracking-[-0.01em] mb-1">

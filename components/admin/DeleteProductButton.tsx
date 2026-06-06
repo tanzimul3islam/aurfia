@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { useState, useTransition } from 'react';
 import { deleteProduct } from '@/actions/products/deleteProduct';
 
 export default function DeleteProductButton({ productId }: { productId: number }) {
   const [open, setOpen] = useState(false);
+  const [pending, startTransition] = useTransition();
 
   return (
     <>
@@ -28,16 +30,19 @@ export default function DeleteProductButton({ productId }: { productId: number }
                 Cancel
               </button>
               <form
-                onSubmit={async (e) => {
+                onSubmit={(e) => {
                   e.preventDefault();
+                  if (pending) return;
                   const fd = new FormData(e.currentTarget);
-                  await deleteProduct(fd);
-                  setOpen(false);
+                  startTransition(async () => {
+                    await deleteProduct(fd);
+                    setOpen(false);
+                  });
                 }}
               >
                 <input type="hidden" name="id" value={productId} />
-                <button type="submit" className="btn btn-sm btn-red">
-                  Delete
+                <button type="submit" disabled={pending} className="btn btn-sm btn-red disabled:opacity-50">
+                  {pending ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Delete'}
                 </button>
               </form>
             </div>

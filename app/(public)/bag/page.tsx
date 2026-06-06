@@ -1,6 +1,13 @@
 import { ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 
+import { buildPageMetadata } from '@/lib/seo-helper';
+import type { Metadata } from 'next';
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('Cart');
+}
+
 export default function BagPage() {
   return (
     <div className="container py-12 pt-20">

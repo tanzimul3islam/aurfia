@@ -26,12 +26,11 @@ export default async function AdminHome() {
     { label: "Orders", value: orderCount.count, href: "/admin/orders" },
     { label: "Pending", value: pendingCount.count, href: "/admin/orders" },
     { label: "Reviews", value: reviewCount.count, href: "/admin/reviews" },
-    { label: "Users", value: userCount.count, href: "/admin-login/create-admin" },
+    { label: "Users", value: userCount.count, href: "/admin/users" },
   ];
 
   return (
-    <div className="container py-12">
-      <div className="max-w-4xl">
+    <div className="max-w-4xl">
         <h1 className="font-serif text-[32px] tracking-[-0.01em] mb-2">Dashboard</h1>
         <p className="text-neutral-600 mb-10">Overview and quick access to store management.</p>
 
@@ -66,7 +65,6 @@ export default async function AdminHome() {
             <p className="text-sm text-neutral-500">SEO, analytics, and stats</p>
           </Link>
         </div>
-      </div>
     </div>
   );
 }

@@ -2,8 +2,7 @@ import Link from "next/link";
 
 export default function AdminMarketing() {
   return (
-    <div className="container py-12">
-      <div className="max-w-4xl">
+    <div className="max-w-4xl">
         <h1 className="h2 mb-2">Marketing</h1>
         <p className="text-neutral-600 mb-8">Marketing tools for SEO, analytics, and statistics.</p>
 
@@ -45,7 +44,6 @@ export default function AdminMarketing() {
             <p>• <strong>Social Media:</strong> Share your products on Instagram and Facebook</p>
           </div>
         </div>
-      </div>
     </div>
   );
 }

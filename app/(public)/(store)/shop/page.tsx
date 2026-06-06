@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { ArrowUpDown, SlidersHorizontal } from 'lucide-react';
 import ProductCard from '@/components/product-card';
 import Pagination from '@/components/pagination';
+import BreadcrumbStructuredData from '@/components/BreadcrumbStructuredData';
 import SkeletonProductCard from '@/components/SkeletonProductCard';
 import { getAllProducts, ProductWithImages } from '@/actions/publicApis/productForStore';
 import FilterSidebar, { Filters } from '@/components/shop/FilterSidebar';
@@ -143,8 +144,16 @@ export default function ShopPage() {
     return 'Shop';
   };
 
+  const bcItems = [
+    { name: 'Home', url: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/` },
+    { name: 'Shop', url: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/shop` },
+  ];
+  if (category) bcItems.push({ name: category.replace(/-/g, ' '), url: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/shop?category=${category}` });
+  if (subcategory) bcItems.push({ name: subcategory.replace(/-/g, ' '), url: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/shop?category=${category}&subcategory=${subcategory}` });
+
   return (
     <>
+      <BreadcrumbStructuredData items={bcItems} />
       <div className="max-w-none pb-16">
         {(category || subcategory) && (
           <div className="px-6 pt-6 pb-2">

@@ -57,7 +57,7 @@ export default function BulkImportPage() {
   };
 
   return (
-    <div className="container max-w-3xl py-12">
+    <div>
       <h1 className="font-serif text-[28px] tracking-[-0.01em] mb-1">
         Bulk Import
       </h1>

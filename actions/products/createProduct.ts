@@ -1,10 +1,11 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { products, productImages, productBreadcrumbs, productOptions } from '@/db/schema';
+import { products, productImages, productBreadcrumbs, productOptions, seoMeta } from '@/db/schema';
 import { isSuperAdminSession } from '../auth/isSuperAdminSession';
 import { isUserAdmin } from '../auth/isUserAdmin';
 import { revalidatePath } from 'next/cache';
+import { eq } from 'drizzle-orm';
 
 export async function createProduct(formData: FormData) {
   const isSuperAdmin = await isSuperAdminSession();
@@ -31,6 +32,9 @@ export async function createProduct(formData: FormData) {
   const variantsRaw = formData.get('variants') as string;
   const variants: { title: string; price: string; sellingPrice: string; imageUrl: string }[] =
     variantsRaw ? JSON.parse(variantsRaw) : [];
+
+  const metaTitle = (formData.get('meta_title') as string) || null;
+  const metaDescription = (formData.get('meta_description') as string) || null;
 
   const [result] = await db
     .insert(products)
@@ -80,6 +84,16 @@ export async function createProduct(formData: FormData) {
         sellingPrice: v.sellingPrice ? parseFloat(v.sellingPrice) : null,
         imageUrl: v.imageUrl || null,
       });
+    }
+  }
+
+  if (metaTitle || metaDescription) {
+    const pageKey = `product_${productId}`;
+    const existing = await db.select().from(seoMeta).where(eq(seoMeta.page, pageKey));
+    if (existing.length > 0) {
+      await db.update(seoMeta).set({ title: metaTitle, description: metaDescription }).where(eq(seoMeta.page, pageKey));
+    } else {
+      await db.insert(seoMeta).values({ page: pageKey, title: metaTitle, description: metaDescription });
     }
   }
 

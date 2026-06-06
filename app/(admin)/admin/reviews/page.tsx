@@ -5,7 +5,7 @@ export default async function AdminReviewsPage() {
   const reviews = await getAllReviews();
 
   return (
-    <div className="py-8">
+    <div>
       <h1 className="font-serif text-[28px] mb-1">Reviews</h1>
       <p className="text-sm text-zinc-500 mb-8">
         {reviews.length} review{reviews.length !== 1 ? "s" : ""}

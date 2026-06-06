@@ -1,18 +1,24 @@
 'use client'
 import { getAnalyticsSettings, saveAnalyticsSettings } from '@/actions/seo/analytics';
+import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function AdminAnalytics() {
-  const [gaCode, setGaCode] = useState('GA-XXXXXXXXXX');
+  const [loading, setLoading] = useState(true);
+  const [gaCode, setGaCode] = useState('');
   const [isEnabled, setIsEnabled] = useState(false);
-useEffect(() => {
-  async function load() {
-    const data = await getAnalyticsSettings()
-    setGaCode(data.gaCode || "")
-    setIsEnabled(!!data.enabled)
-  }
-  load()
-}, [])
+
+  useEffect(() => {
+    async function load() {
+      const data = await getAnalyticsSettings()
+      setGaCode(data.gaCode || "")
+      setIsEnabled(!!data.enabled)
+      setLoading(false)
+    }
+    load()
+  }, [])
+
+  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-neutral-400" /></div>;
   async function saveAnalytics() {
   const result = await saveAnalyticsSettings(gaCode, isEnabled)
   if (result.success) {
@@ -23,8 +29,7 @@ useEffect(() => {
 }
 
   return (
-    <div className="container py-12">
-      <div className="max-w-4xl">
+    <div className="max-w-4xl">
         <h1 className="h2 mb-2">Analytics</h1>
         <p className="text-neutral-600 mb-8">Google Analytics integration and visitor tracking.</p>
 
@@ -114,7 +119,6 @@ useEffect(() => {
             <p><strong>5.</strong> Data will be visible within 24 hours</p>
           </div>
         </div>
-      </div>
     </div>
   );
 }

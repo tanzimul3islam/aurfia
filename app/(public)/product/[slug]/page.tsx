@@ -7,6 +7,7 @@ import { useCartStore } from "@/lib/cart-store";
 import ProductCard from "@/components/product-card";
 import Toast from "@/components/Toast";
 import ProductStructuredData from "@/components/ProductStructuredData";
+import BreadcrumbStructuredData from "@/components/BreadcrumbStructuredData";
 import { OptimizedImage } from "@/components/optimized-image";
 import {
   getProductBySlug,
@@ -184,6 +185,13 @@ export default function ProductPage() {
             alt: product.name,
           })),
         }}
+      />
+      <BreadcrumbStructuredData
+        items={[
+          { name: 'Home', url: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/` },
+          { name: 'Shop', url: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/shop` },
+          { name: product.name, url: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/product/${product.slug}` },
+        ]}
       />
 
       <div className="container py-8 lg:py-12">
