@@ -31,6 +31,7 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [showConvs, setShowConvs] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -59,11 +60,18 @@ export function ChatWidget() {
   }, []);
 
   const handleNewConv = useCallback(async () => {
-    const conv = await createConversation();
-    if (conv) {
-      setActiveConvId(conv.id);
-      setMessages([]);
-      await loadConvs();
+    setError(null);
+    try {
+      const conv = await createConversation();
+      if (conv) {
+        setActiveConvId(conv.id);
+        setMessages([]);
+        await loadConvs();
+      } else {
+        setError('Failed to create conversation. Please try again.');
+      }
+    } catch {
+      setError('Something went wrong. Please try again.');
     }
   }, [loadConvs]);
 
@@ -105,7 +113,7 @@ export function ChatWidget() {
   const activeConv = convs.find((c) => c.id === activeConvId);
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 w-[360px] max-w-[calc(100vw-40px)] h-[520px] max-h-[calc(100vh-120px)] bg-white rounded-xl shadow-2xl border border-black/10 flex flex-col overflow-hidden">
+    <div className="fixed bottom-5 right-5 z-50 w-[360px] max-w-[calc(100vw-40px)] h-[520px] max-h-[calc(100dvh-120px)] bg-white rounded-xl shadow-2xl border border-black/10 flex flex-col overflow-hidden">
       {showConvs ? (
         <>
           <div className="flex items-center justify-between px-4 py-3 border-b border-black/10 bg-black text-white">
@@ -151,9 +159,10 @@ export function ChatWidget() {
               <div className="flex flex-col items-center justify-center h-full text-center px-4">
                 <MessageCircle size={32} className="text-neutral-300 mb-3" />
                 <p className="text-sm text-neutral-500 mb-4">Ask about products, orders, or anything about AURFIA.</p>
+                {error && <p className="text-xs text-red-500 mb-3">{error}</p>}
                 <button
                   onClick={handleNewConv}
-                  className="bg-black text-white px-5 py-2 rounded-lg text-sm hover:opacity-90 transition-opacity"
+                  className="bg-black text-white px-5 py-3 min-h-[44px] rounded-lg text-sm hover:opacity-90 transition-opacity w-full sm:w-auto"
                 >
                   Start chatting
                 </button>

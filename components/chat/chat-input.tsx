@@ -43,7 +43,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
           placeholder="Type your message..."
           rows={1}
           disabled={disabled}
-          className="flex-1 resize-none rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-black/30 transition-colors disabled:opacity-50"
+          className="flex-1 resize-none rounded-lg border border-black/10 px-3 py-2 text-[16px] outline-none focus:border-black/30 transition-colors disabled:opacity-50"
           style={{ minHeight: 36, maxHeight: 120 }}
         />
         <button
