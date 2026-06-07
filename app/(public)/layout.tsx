@@ -16,7 +16,7 @@ export default async function Layout({
           <DiscountBanner />
           <Header />
         </div>
-        <main className="flex-1 p-8">{children}</main>
+        <main className="flex-1 p-4 md:p-8">{children}</main>
         <Footer />
         <CookieBanner /> 
       </div>

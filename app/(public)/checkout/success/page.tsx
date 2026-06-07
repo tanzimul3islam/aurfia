@@ -29,7 +29,7 @@ function ConfirmationContent() {
 
   if (loading) {
     return (
-      <div className="container py-12 text-center">
+      <div className="mx-auto max-w-6xl w-full py-12 text-center">
         <div className="text-lg">Confirming your order...</div>
       </div>
     );
@@ -37,7 +37,7 @@ function ConfirmationContent() {
 
   if (!order) {
     return (
-      <div className="container py-12 text-center">
+      <div className="mx-auto max-w-6xl w-full py-12 text-center">
         <div className="text-xl font-serif mb-4">Order not found</div>
         <p className="text-neutral-600 mb-6">We couldn&apos;t find an order matching that session.</p>
         <Link href="/shop" className="inline-flex h-11 px-5 bg-black text-white items-center">Continue Shopping</Link>
@@ -86,7 +86,7 @@ function ConfirmationContent() {
 
 export default function OrderConfirmationPage() {
   return (
-    <div className="container py-12">
+    <div className="mx-auto max-w-6xl w-full py-12">
       <Suspense fallback={<div className="text-center text-lg">Loading...</div>}>
         <ConfirmationContent />
       </Suspense>

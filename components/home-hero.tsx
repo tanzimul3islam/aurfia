@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function HomeHero() {
   return (
@@ -26,10 +27,13 @@ export default function HomeHero() {
           </div>
         </div>
         <div className="md:flex-1 relative min-h-[40vh] md:min-h-0 aspect-[4/3] md:aspect-auto bg-neutral-200 overflow-hidden">
-          <img
-            src="https://res.cloudinary.com/dzkcuc82f/image/upload/v1780766379/products/2026_ICONS_LP_NP_ONFIG_T_16x9.jpg"
+          <Image
+            src="https://res.cloudinary.com/dzkcuc82f/image/upload/f_auto,q_auto,w_1920/v1780766379/products/2026_ICONS_LP_NP_ONFIG_T_16x9.jpg"
             alt=""
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            className="object-cover"
+            priority
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
         </div>
       </div>

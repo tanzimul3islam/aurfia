@@ -74,15 +74,15 @@ export default function CheckoutPage() {
 
   if (!mounted) {
     return (
-      <div className="container py-12 text-center">
+      <div className="max-w-6xl mx-auto w-full py-12 text-center">
         <div className="text-lg">Loading checkout...</div>
       </div>
     )
   }
 
   return (
-    <div className="container py-8 lg:py-12 grid lg:grid-cols-[1fr_360px] gap-8 lg:gap-16">
-      <div>
+    <div className="max-w-6xl mx-auto w-full px-4 md:px-8 py-8 lg:py-12 flex flex-col lg:flex-row gap-8 lg:gap-16">
+      <div className="flex-1 min-w-0">
         <nav className="text-sm text-neutral-600 mb-6 flex items-center gap-3">
           <span className="text-black font-medium">Shipping</span>
         </nav>
@@ -90,24 +90,24 @@ export default function CheckoutPage() {
         <section className="space-y-4">
           <h1 className="font-serif text-[26px] md:text-[32px] leading-[1.1]">Shipping Address</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <input className="h-11 px-3 border border-black/10 rounded-none" placeholder="First Name *"
+            <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none" placeholder="First Name *"
               value={shipping.firstName} onChange={e=>setShipping({...shipping, firstName:e.target.value})}/>
-            <input className="h-11 px-3 border border-black/10 rounded-none" placeholder="Last Name *"
+            <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none" placeholder="Last Name *"
               value={shipping.lastName} onChange={e=>setShipping({...shipping, lastName:e.target.value})}/>
           </div>
-          <input className="h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Email *"
+          <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Email *"
             value={shipping.email} onChange={e=>setShipping({...shipping, email:e.target.value})}/>
-          <input className="h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Phone (optional)"
+          <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Phone (optional)"
             value={shipping.phone} onChange={e=>setShipping({...shipping, phone:e.target.value})}/>
-          <input className="h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Street & Number *"
+          <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Street & Number *"
             value={shipping.street} onChange={e=>setShipping({...shipping, street:e.target.value})}/>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <input className="h-11 px-3 border border-black/10 rounded-none" placeholder="ZIP Code *"
+            <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none" placeholder="ZIP Code *"
               value={shipping.zip} onChange={e=>setShipping({...shipping, zip:e.target.value})}/>
-            <input className="h-11 px-3 border border-black/10 rounded-none sm:col-span-2" placeholder="City *"
+            <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none sm:col-span-2" placeholder="City *"
               value={shipping.city} onChange={e=>setShipping({...shipping, city:e.target.value})}/>
           </div>
-          <input className="h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Country *"
+          <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Country *"
             value={shipping.country} onChange={e=>setShipping({...shipping, country:e.target.value})}/>
 
           <label className="mt-2 flex items-start gap-2 text-sm text-neutral-700">
@@ -120,22 +120,22 @@ export default function CheckoutPage() {
             <div className="mt-4 border-t border-black/10 pt-4 space-y-3">
               <h2 className="font-serif text-[20px] md:text-[24px] leading-[1.2]">Billing Address</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <input className="h-11 px-3 border border-black/10 rounded-none" placeholder="First Name *"
+            <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none" placeholder="First Name *"
                   value={billing.firstName} onChange={e=>setBilling({...billing, firstName:e.target.value})}/>
-                <input className="h-11 px-3 border border-black/10 rounded-none" placeholder="Last Name *"
+                <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none" placeholder="Last Name *"
                   value={billing.lastName} onChange={e=>setBilling({...billing, lastName:e.target.value})}/>
               </div>
-              <input className="h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Email *"
+              <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Email *"
                 value={billing.email} onChange={e=>setBilling({...billing, email:e.target.value})}/>
-              <input className="h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Street & Number *"
+              <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Street & Number *"
                 value={billing.street} onChange={e=>setBilling({...billing, street:e.target.value})}/>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <input className="h-11 px-3 border border-black/10 rounded-none" placeholder="ZIP Code *"
+                <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none" placeholder="ZIP Code *"
                   value={billing.zip} onChange={e=>setBilling({...billing, zip:e.target.value})}/>
-                <input className="h-11 px-3 border border-black/10 rounded-none sm:col-span-2" placeholder="City *"
+                <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none sm:col-span-2" placeholder="City *"
                   value={billing.city} onChange={e=>setBilling({...billing, city:e.target.value})}/>
               </div>
-              <input className="h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Country *"
+              <input className="text-[16px] h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Country *"
                 value={billing.country} onChange={e=>setBilling({...billing, country:e.target.value})}/>
             </div>
           )}
@@ -151,11 +151,11 @@ export default function CheckoutPage() {
               You will be redirected to Stripe Checkout to complete your payment securely.
               We accept Visa, Mastercard, and PayPal.
             </div>
-            <div className="flex justify-end">
+            <div className="flex flex-col sm:flex-row justify-end">
               <button
                 disabled={!canContinue || isProcessing}
                 onClick={handlePayment}
-                className="h-12 px-8 rounded-none text-sm font-medium bg-black text-white hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="h-12 px-8 rounded-none text-sm font-medium bg-black text-white hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
               >
                 {isProcessing ? 'Redirecting to Stripe...' : 'Continue to Payment'}
               </button>
@@ -164,7 +164,7 @@ export default function CheckoutPage() {
         </section>
       </div>
 
-      <aside className="lg:sticky lg:top-6 h-max border border-black/10 p-4">
+      <aside className="lg:sticky lg:top-6 h-max border border-black/10 p-4 lg:w-[360px] lg:shrink-0">
         <div className="space-y-3">
           {items.map(item=>(
             <div key={item.id} className="flex gap-3">

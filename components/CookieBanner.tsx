@@ -14,16 +14,16 @@ export default function CookieBanner() {
 
   return (
     <div className="fixed bottom-0 inset-x-0 z-50 border-t border-black/10 bg-white/95 backdrop-blur">
-      <div className="container py-4 flex flex-col md:flex-row md:items-center gap-3 text-sm">
-        <p className="text-neutral-700">
+      <div className="max-w-6xl mx-auto w-full px-4 md:px-8 py-4 flex flex-col sm:flex-row sm:items-center gap-3 text-sm">
+        <p className="text-neutral-700 text-pretty">
           We use cookies to improve your experience. You can adjust settings at any time.
         </p>
-        <div className="md:ml-auto flex gap-2">
-          <button className="h-10 px-4 border border-black/10 rounded-none">
+        <div className="sm:ml-auto flex flex-col sm:flex-row gap-2">
+          <button className="h-10 px-4 border border-black/10 rounded-none w-full sm:w-auto">
             Settings
           </button>
           <button
-            className="h-10 px-4 bg-black text-white rounded-none"
+            className="h-10 px-4 bg-black text-white rounded-none w-full sm:w-auto"
             onClick={() => {
               localStorage.setItem('cookie_ok', '1')
               setOpen(false)
