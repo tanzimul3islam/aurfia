@@ -14,10 +14,10 @@ export default function CartPage() {
   const progress = Math.min(100, (subtotalEuros / FREE_SHIPPING_THRESHOLD) * 100)
 
   return (
-    <div className="container py-8 lg:py-12 grid lg:grid-cols-[1fr_360px] gap-10">
+    <div className="max-w-6xl mx-auto w-full px-4 md:px-8 py-8 lg:py-12 flex flex-col lg:flex-row gap-8 lg:gap-16">
       
       {/* Cart Items */}
-      <section aria-labelledby="cart-heading">
+      <section aria-labelledby="cart-heading" className="flex-1 min-w-0">
         <h1 id="cart-heading" className="font-serif text-[28px] md:text-[40px] leading-[1.1]">
           Cart
         </h1>
@@ -124,7 +124,7 @@ export default function CartPage() {
       </section>
 
       {/* Summary */}
-      <aside className="lg:sticky lg:top-32 h-max border border-black/10 p-4">
+      <aside className="lg:sticky lg:top-32 h-max border border-black/10 p-4 lg:w-[360px] lg:shrink-0">
         <div className="flex items-center justify-between text-sm">
           <span>Subtotal</span>
           <span className="font-medium">
