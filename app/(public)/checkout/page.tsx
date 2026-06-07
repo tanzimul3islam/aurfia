@@ -81,7 +81,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="container py-8 lg:py-12 grid lg:grid-cols-[1fr_360px] gap-16">
+    <div className="container py-8 lg:py-12 grid lg:grid-cols-[1fr_360px] gap-8 lg:gap-16">
       <div>
         <nav className="text-sm text-neutral-600 mb-6 flex items-center gap-3">
           <span className="text-black font-medium">Shipping</span>
@@ -101,10 +101,10 @@ export default function CheckoutPage() {
             value={shipping.phone} onChange={e=>setShipping({...shipping, phone:e.target.value})}/>
           <input className="h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Street & Number *"
             value={shipping.street} onChange={e=>setShipping({...shipping, street:e.target.value})}/>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <input className="h-11 px-3 border border-black/10 rounded-none" placeholder="ZIP Code *"
               value={shipping.zip} onChange={e=>setShipping({...shipping, zip:e.target.value})}/>
-            <input className="h-11 px-3 border border-black/10 rounded-none col-span-2" placeholder="City *"
+            <input className="h-11 px-3 border border-black/10 rounded-none sm:col-span-2" placeholder="City *"
               value={shipping.city} onChange={e=>setShipping({...shipping, city:e.target.value})}/>
           </div>
           <input className="h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Country *"
@@ -129,10 +129,10 @@ export default function CheckoutPage() {
                 value={billing.email} onChange={e=>setBilling({...billing, email:e.target.value})}/>
               <input className="h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Street & Number *"
                 value={billing.street} onChange={e=>setBilling({...billing, street:e.target.value})}/>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <input className="h-11 px-3 border border-black/10 rounded-none" placeholder="ZIP Code *"
                   value={billing.zip} onChange={e=>setBilling({...billing, zip:e.target.value})}/>
-                <input className="h-11 px-3 border border-black/10 rounded-none col-span-2" placeholder="City *"
+                <input className="h-11 px-3 border border-black/10 rounded-none sm:col-span-2" placeholder="City *"
                   value={billing.city} onChange={e=>setBilling({...billing, city:e.target.value})}/>
               </div>
               <input className="h-11 px-3 border border-black/10 rounded-none w-full" placeholder="Country *"

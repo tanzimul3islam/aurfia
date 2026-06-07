@@ -3,8 +3,8 @@ import Link from 'next/link';
 export default function HomeHero() {
   return (
     <section className="bg-brand-light">
-      <div className="mx-auto flex flex-col md:flex-row min-h-[85vh]">
-        <div className="flex-1 flex flex-col justify-center px-6 md:px-16 lg:px-24 py-20 md:py-0">
+      <div className="mx-auto flex flex-col md:flex-row md:min-h-[85vh]">
+        <div className="md:flex-1 flex flex-col justify-center px-6 md:px-16 lg:px-24 py-14 md:py-0">
           <span className="text-xs tracking-[0.15em] uppercase text-brand-accent/80 font-medium mb-5">
             925 Sterling Silver
           </span>
@@ -25,7 +25,7 @@ export default function HomeHero() {
             </Link>
           </div>
         </div>
-        <div className="flex-1 relative min-h-[50vh] md:min-h-0 bg-neutral-200 overflow-hidden">
+        <div className="md:flex-1 relative min-h-[40vh] md:min-h-0 aspect-[4/3] md:aspect-auto bg-neutral-200 overflow-hidden">
           <img
             src="https://res.cloudinary.com/dzkcuc82f/image/upload/v1780766379/products/2026_ICONS_LP_NP_ONFIG_T_16x9.jpg"
             alt=""
